@@ -1,0 +1,11 @@
+<table>
+  <tr>
+    <th>Test Name</th>
+  </tr>
+
+  <% @tests.each do |test| %>
+    <tr>
+      <td><a href="/test/<%= test.name %>"><%= test.name %></a></td>
+    </tr>
+  <% end %>
+</table>

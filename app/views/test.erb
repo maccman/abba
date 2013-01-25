@@ -1,0 +1,17 @@
+<p>Test name: <%= @test.name %></p>
+
+<p>Variants:</p>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Conversion rate</th>
+  </tr>
+
+  <% @variants.each do |variant| %>
+    <tr>
+      <td><%= variant.name %></td>
+      <td><%= variant.conversion_rate.round(2) %></td>
+    </tr>
+  <% end %>
+</table>
