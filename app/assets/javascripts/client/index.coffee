@@ -27,6 +27,10 @@ class @Abba
     @variants.push(name: name, callback: callback)
     this
 
+  control: (callback) =>
+    @variant('_control', callback)
+    this
+
   a: (callback, name = 'a') =>
     @variant(name, callback)
     this

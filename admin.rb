@@ -39,6 +39,7 @@ end
 get '/experiment/:name' do
   @experiment = Abba::Experiment.find_by_name!(params[:name])
   @variants   = @experiment.variants.all
+  @variants   = @variants.sort_by(&:conversion_rate).reverse
   @variant_graph = @experiment.granular_conversion_rate(7.days.ago, Time.current)
 
   erb :experiment

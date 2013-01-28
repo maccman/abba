@@ -1,6 +1,7 @@
 module Abba
   class Variant
     include MongoMapper::Document
+    CONTROL = '_control'
 
     key :name
     key :started_count, :default => 0
@@ -12,6 +13,18 @@ module Abba
     many :completed_requests, :as => :completed_request, :class => Abba::Request
 
     validates_presence_of :name
+
+    belongs_to :experiment, :class => Abba::Experiment
+
+    scope :control, where(:name => CONTROL)
+
+    def control?
+      name == CONTROL
+    end
+
+    def full_name
+      control? ? 'Control' : name
+    end
 
     def start!(request)
       increment :started_count => 1
@@ -26,6 +39,10 @@ module Abba
     def conversion_rate
       return 0 if started_count.zero?
       (completed_count.to_f / started_count.to_f)
+    end
+
+    def percent_conversion_rate
+      (conversion_rate * 100).round(1)
     end
 
     def conversion_rate_for(start_at, end_at)
@@ -54,8 +71,46 @@ module Abba
       self.save!
     end
 
-    def as_json(options = {})
-      {name: name}
+    # Calculations
+
+    def probability
+      score = z_score.try(:abs)
+      return unless score
+      probability = Z_TO_PROBABILITY.find { |z,p| score >= z }
+      probability ? probability.last : 0
+    end
+
+    def percent_difference
+      control = experiment.control
+      alt     = self
+
+      return if !control or control == alt
+      return 0 if control.conversion_rate.zero?
+
+      (alt.conversion_rate - control.conversion_rate) / control.conversion_rate * 100
+    end
+
+    protected
+
+    def z_score
+      control = experiment.control
+      alt     = self
+
+      return if !control or control == alt
+
+      pc = control.conversion_rate
+      nc = control.started_count
+      p  = alt.conversion_rate
+      n  = alt.started_count
+
+      (p - pc) / ((p * (1-p)/n) + (pc * (1-pc)/nc)).abs ** 0.5
+    end
+
+    begin
+      a         = 50.0
+      norm_dist = []
+      (0.0..3.1).step(0.01) { |x| norm_dist << [x, a += 1 / Math.sqrt(2 * Math::PI) * Math::E ** (-x ** 2 / 2)] }
+      Z_TO_PROBABILITY = [90, 95, 99, 99.9].map { |pct| [norm_dist.find { |x,a| a >= pct }.first, pct] }.reverse
     end
   end
 end

@@ -6,7 +6,7 @@
 </section>
 
 
-<section class="experiments">
+<section class="experiment">
   <nav class="nav">
     <ul>
       <li><a>Variants</a></li>
@@ -24,14 +24,18 @@
             <th>Name</th>
             <th>Conversions / Visitors</th>
             <th>Conversion rate</th>
+            <th>Probability</th>
+            <th>Improvement</th>
           </tr>
         </thead>
 
         <% @variants.each do |variant| %>
           <tr>
-            <td><%= variant.name %></td>
-            <td><%= variant.completed_count %> / <%= variant.started_count %></td>
-            <td><%= variant.conversion_rate.round(2) %></td>
+            <td class="name"><%= variant.control? ? 'Control' : variant.name %></td>
+            <td class="overall"><%= variant.completed_count %> / <%= variant.started_count %></td>
+            <td class="rate"><%= variant.percent_conversion_rate %></td>
+            <td class="probability"><%= variant.probability %></td>
+            <td class="difference"><%= variant.percent_difference %></td>
           </tr>
         <% end %>
       </table>

@@ -69,27 +69,13 @@ class Graph extends Controller
         .enter().append('g')
         .attr('class', (d, i) -> "variants variant-#{i}")
 
-    # TODO - select first variant
-    # rules = svg.selectAll('g.rule')
-    #   .data([variants.a])
-    # .enter().append('g')
-    #   .attr('class', 'rule')
-    #
-    # rules.append('text')
-    #   .attr('class', 'label')
-    #   .attr('y', 400)
-    #   .attr('x', (d, i) -> x(i))
-    #   .attr('dy', '.35em')
-    #   .attr('text-anchor', 'middle')
-    #   .text((d) -> moment(d.time).format('MMMM Do').toUpperCase())
+    svgVariant.append('path')
+        .attr('class', 'area')
+        .attr('d', (d) -> area(d.values))
 
     svgVariant.append('path')
         .attr('class', 'line')
         .attr('d', (d) -> line(d.values))
-
-    svgVariant.append('path')
-        .attr('class', 'area')
-        .attr('d', (d) -> area(d.values))
 
     svgVariant.selectAll('circle')
         .data((d) -> d.values)
@@ -100,10 +86,12 @@ class Graph extends Controller
         .attr('cy', (d, i) -> y(d.rate))
         .attr('r', 4)
 
-  showToolTip: (e) =>
+    $legend = $('<ul />').addClass('legend')
+    @$el.append($legend)
 
-
-  hideToolTip: (e) =>
-
+    for variant, i in variants
+      $variant = $('<li />').text(variant.name)
+      $variant.addClass("legend-#{i}")
+      $legend.append($variant)
 
 module.exports = Graph

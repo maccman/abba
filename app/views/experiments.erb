@@ -1,28 +1,47 @@
 <section class="header">
   <header>
     <h1>Experiments</h1>
-    <h2>All your a/b experiments and results</h2>
+    <h2>Your a/b tests and results</h2>
   </header>
 </section>
 
 <section class="experiments">
-  <article class="container">
+  <article class="container list">
     <h3>Experiments</h3>
 
     <table class="table">
       <thead>
         <tr>
-          <th>#</th>
-          <th>Name</th>
+          <th class="index">#</th>
+          <th class="name">Name</th>
         </tr>
       </thead>
 
-      <% @experiments.each do |experiment| %>
+      <% @experiments.each_with_index do |experiment, i| %>
         <tr>
-          <td>1</td>
-          <td><a href="/experiment/<%= experiment.name %>"><%= experiment.name %></a></td>
+          <td class="index"><%= i + 1 %></td>
+          <td class='name'><a href="/experiment/<%= experiment.name %>"><%= experiment.name %></a></td>
         </tr>
       <% end %>
     </table>
+  </article>
+
+  <article class="container new">
+    <h3>New Experiment</h3>
+    <pre><%= %{
+<script src="//#{request.host_with_port}/v1/abba.js"></script>
+<script>
+  Abba('test name')
+    .control(function(){ /* ... */ })
+    .variant('test a', function(){ /* ... */ })
+    .variant('test b', function(){ /* ... */ })
+    .start();
+</script>
+
+<script>
+  // On successful conversion
+  Abba('test name').complete();
+</script>
+}.strip %></pre>
   </article>
 </section>

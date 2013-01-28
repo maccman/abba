@@ -12,10 +12,14 @@ module Abba
     def granular_conversion_rate(start_at, end_at, duration = 1.day)
       variants.all.map do |variant|
         {
-          :name   => variant.name,
+          :name   => variant.full_name,
           :values => variant.granular_conversion_rate(start_at, end_at, duration)
         }
       end
+    end
+
+    def control
+      self.variants.control.first
     end
   end
 end
