@@ -77,8 +77,9 @@ end
 
 # Router
 
-get '/' do
-  redirect '/admin/experiments'
+get '/assets/*' do
+  env['PATH_INFO'].sub!(%r{^/assets}, '')
+  Catapult.environment.call(env)
 end
 
 get '/admin/experiments' do
@@ -107,4 +108,8 @@ get '/admin/experiments/:id' do
   @variants   = Abba::VariantPresentor::Group.new(@experiment, start_at: @start_at, end_at: @end_at)
 
   erb :experiment
+end
+
+get '/' do
+  redirect '/admin/experiments'
 end
