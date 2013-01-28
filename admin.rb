@@ -49,20 +49,49 @@ helpers do
       end
     end
   end
+
+  def protected!
+    unless authorized?
+      response['WWW-Authenticate'] = %(Basic realm="Testing HTTP Auth")
+      throw(:halt, [401, "Not authorized\n"])
+    end
+  end
+
+  def authorized?
+    @auth ||=  Rack::Auth::Basic::Request.new(request.env)
+    @auth.provided? && @auth.basic? &&
+      @auth.credentials && @auth.credentials == [settings.username, settings.password]
+  end
+
+  def ssl_enforce!
+    unless request.secure?
+      redirect "https://#{request.host}#{request.fullpath}"
+    end
+  end
+end
+
+configure :production do
+  before '/admin/*' do
+    protected!
+  end
+
+  before '/admin/*' do
+    ssl_enforce!
+  end
 end
 
 # Router
 
 get '/' do
-  redirect '/experiments'
+  redirect '/admin'
 end
 
-get '/experiments' do
+get '/admin' do
   @experiments = Abba::Experiment.all
   erb :experiments
 end
 
-get '/experiments/:id/chart', :provides => 'application/json' do
+get '/admin/experiments/:id/chart', :provides => 'application/json' do
   required :start_at, :end_at
 
   experiment = Abba::Experiment.find(params[:id])
@@ -72,7 +101,7 @@ get '/experiments/:id/chart', :provides => 'application/json' do
   experiment.granular_conversion_rate(start_at: start_at, end_at: end_at).to_json
 end
 
-get '/experiments/:id' do
+get '/admin/experiments/:id' do
   @experiment = Abba::Experiment.find(params[:id])
 
   @start_at   = Date.to_mongo(params[:start_at]).beginning_of_day if params[:start_at].present?
