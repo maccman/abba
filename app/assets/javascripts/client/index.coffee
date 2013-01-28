@@ -1,5 +1,5 @@
 class @Abba
-  @endpoint: 'http://localhost:4050'
+  @endpoint: 'http://localhost:4567'
 
   constructor: (name, options = {}) ->
     unless name
@@ -112,3 +112,16 @@ class @Abba
       value = decodeURIComponent(cookie.substr(index + 1))
       return value if key is name
     null
+
+do ->
+  host = (url) ->
+    # IE6 only resolves resolves hrefs using innerHTML
+    parent = document.createElement('div')
+    parent.innerHTML = "<a href=\"#{url}\">x</a>"
+    parser = parent.firstChild
+    "#{parser.host}"
+
+  # Find Abba's endpoint from the script tag
+  scripts = document.getElementsByTagName('script')
+  scripts = (script.src for script in scripts when /abba\.js$/.test(script.src))
+  Abba.endpoint = "//#{host(scripts[0])}" if scripts[0]
