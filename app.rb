@@ -17,7 +17,7 @@ configure do
   }, settings.environment.to_s)
 
   set :sprockets, Sprockets::Environment.new
-  settings.sprockets.append_path(settings.root + '/app/assets/javascripts')
+  settings.sprockets.append_path('app/assets/javascripts')
 end
 
 helpers do

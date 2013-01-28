@@ -19,10 +19,10 @@ configure do
     'development' => {'uri' => 'mongodb://localhost:27017/abba-development'}
   }, settings.environment.to_s)
 
-  Catapult.environment.append_path(settings.root  + '/app/assets/javascripts')
-  Catapult.environment.append_path(settings.root  + '/app/assets/stylesheets')
+  Catapult.environment.append_path('app/assets/javascripts')
+  Catapult.environment.append_path('app/assets/stylesheets')
 
-  set :views, settings.root + '/app/views'
+  set :views, 'app/views'
   set :erb, :escape_html => true
 end
 
@@ -67,21 +67,21 @@ end
 
 configure :production do
   before '/admin/*' do
-    protected!
+    ssl_enforce!
   end
 
   before '/admin/*' do
-    ssl_enforce!
+    protected!
   end
 end
 
 # Router
 
 get '/' do
-  redirect '/admin'
+  redirect '/admin/experiments'
 end
 
-get '/admin' do
+get '/admin/experiments' do
   @experiments = Abba::Experiment.all
   erb :experiments
 end
