@@ -1,3 +1,7 @@
+<meta http-equiv="refresh" content="1800">
+
+<% title @experiment.name %>
+
 <section class="header">
   <header>
     <h1><%= @experiment.name %></h1>
@@ -5,12 +9,11 @@
   </header>
 </section>
 
-
 <section class="experiment">
   <nav class="nav">
     <ul>
       <li><a>Variants</a></li>
-      <li><a>Graph</a></li>
+      <li><a>Chart</a></li>
     </ul>
   </nav>
 
@@ -30,12 +33,18 @@
         </thead>
 
         <% @variants.each do |variant| %>
+          <%
+            percent_conversion_rate = variant.percent_conversion_rate
+            probability             = variant.probability
+            percent_difference      = variant.percent_difference
+          %>
+
           <tr>
             <td class="name"><%= variant.control? ? 'Control' : variant.name %></td>
             <td class="overall"><%= variant.completed_count %> / <%= variant.started_count %></td>
-            <td class="rate"><%= variant.percent_conversion_rate %></td>
-            <td class="probability"><%= variant.probability %></td>
-            <td class="difference"><%= variant.percent_difference %></td>
+            <td class="conversion <%= dir(percent_conversion_rate) %>"><%= percent_conversion_rate %></td>
+            <td class="probability <%= dir(probability) %>"><%= probability %></td>
+            <td class="difference <%= dir(percent_difference) %>"><%= percent_difference %></td>
           </tr>
         <% end %>
       </table>
@@ -45,7 +54,7 @@
       <article class="container">
         <h3>Conversion over time:</h3>
 
-        <div class="graph"></div>
+        <div class="chart"></div>
       </article>
     </div>
   </article>
@@ -53,8 +62,11 @@
 
 <script type="text/javascript" charset="utf-8">
   jQuery(function($){
-    var Graph = require('admin/graph');
-    var graph = new Graph({el: $('.graph')});
-    graph.render(<%== @variant_graph.to_json %>);
+    var Chart = require('admin/chart');
+    var chart = new Chart({
+      el:    $('.chart'),
+      model: <%== @experiment.to_json %>
+    });
+    chart.fetch();
   });
 </script>

@@ -25,6 +25,18 @@ configure do
   set :erb, :escape_html => true
 end
 
+helpers do
+  def title(value = nil)
+    @title = value if value
+    @title ? "Abba - #{@title}" : "Abba"
+  end
+
+  def dir(value)
+    return if !value || value.zero?
+    value > 0 ? 'positive' : 'negative'
+  end
+end
+
 # Router
 
 get '/' do
@@ -36,11 +48,16 @@ get '/experiments' do
   erb :experiments
 end
 
-get '/experiment/:name' do
-  @experiment = Abba::Experiment.find_by_name!(params[:name])
+get '/experiments/:id/chart', :provides => 'application/json' do
+  @experiment = Abba::Experiment.find(params[:id])
+  start_at    = @experiment.created_at.beginning_of_day
+  end_at      = Time.now.utc
+  @experiment.granular_conversion_rate(start_at, end_at).to_json
+end
+
+get '/experiments/:id' do
+  @experiment = Abba::Experiment.find(params[:id])
   @variants   = @experiment.variants.all
   @variants   = @variants.sort_by(&:conversion_rate).reverse
-  @variant_graph = @experiment.granular_conversion_rate(7.days.ago, Time.current)
-
   erb :experiment
 end

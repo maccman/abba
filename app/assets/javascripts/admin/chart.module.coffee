@@ -1,14 +1,15 @@
 Controller = require('controller')
 moment     = require('moment')
+$          = jQuery
 
-class Graph extends Controller
-  constructor: ->
-    super
+class Chart extends Controller
+  fetch: =>
+    $.getJSON("/experiments/#{@options.model.id}/chart", @render)
 
-  render: (variants) ->
+  render: (variants) =>
     @$el.empty()
 
-    margin = {top: 30, right: 20, bottom: 30, left: 30}
+    margin = {top: 30, right: 30, bottom: 30, left: 30}
     width  = @$el.width() - margin.left - margin.right
     height = 300 - margin.top - margin.bottom
 
@@ -22,8 +23,9 @@ class Graph extends Controller
         .scale(x)
         .tickSize(1)
         .tickPadding(12)
-        .ticks(d3.time.days, 1)
+        .ticks(d3.time.days.utc, 1)
         .orient('bottom')
+        .tickFormat((d, i) -> moment(d).format('MMM Do').toUpperCase())
 
     yAxis = d3.svg.axis()
         .scale(y)
@@ -57,7 +59,7 @@ class Graph extends Controller
 
     svg.append('g')
        .attr('class', 'x axis')
-       .attr('transform', 'translate(0,' + height + ')')
+       .attr('transform', "translate(0,#{height})")
        .call(xAxis)
 
     svg.append('g')
@@ -94,4 +96,4 @@ class Graph extends Controller
       $variant.addClass("legend-#{i}")
       $legend.append($variant)
 
-module.exports = Graph
+module.exports = Chart

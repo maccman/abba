@@ -82,12 +82,12 @@ module Abba
 
     def percent_difference
       control = experiment.control
-      alt     = self
 
-      return if !control or control == alt
+      return if !control or control == self
       return 0 if control.conversion_rate.zero?
 
-      (alt.conversion_rate - control.conversion_rate) / control.conversion_rate * 100
+      rate = (conversion_rate - control.conversion_rate) / control.conversion_rate
+      (rate * 100).round(1)
     end
 
     protected

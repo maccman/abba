@@ -1,3 +1,5 @@
+<% title 'Experiments' %>
+
 <section class="header">
   <header>
     <h1>Experiments</h1>
@@ -20,7 +22,11 @@
       <% @experiments.each_with_index do |experiment, i| %>
         <tr>
           <td class="index"><%= i + 1 %></td>
-          <td class='name'><a href="/experiment/<%= experiment.name %>"><%= experiment.name %></a></td>
+          <td class="name">
+            <a href="/experiments/<%= experiment.id %>">
+              <%= experiment.name %>
+            </a>
+          </td>
         </tr>
       <% end %>
     </table>
@@ -30,6 +36,7 @@
     <h3>New Experiment</h3>
     <pre><%= %{
 <script src="//#{request.host_with_port}/v1/abba.js"></script>
+
 <script>
   Abba('test name')
     .control(function(){ /* ... */ })

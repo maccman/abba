@@ -21,5 +21,9 @@ module Abba
     def control
       self.variants.control.first
     end
+
+    def as_json(options = nil)
+      {id: id, name: name}
+    end
   end
 end

@@ -9,23 +9,37 @@ section.experiment {
   }
 
   table {
+    .conversion:empty:after,
     .probability:empty:after,
     .difference:empty:after {
       content: '–'
     }
 
+    .conversion:not(:empty):after,
     .probability:not(:empty):after,
     .difference:not(:empty):after {
       content: '%'
     }
+
+    .difference.positive:before {
+      content: '+'
+    }
+
+    .difference.positive {
+      color: #209B00
+    }
+
+    .difference.negative {
+      color: #8B1C1C
+    }
   }
 
-  article.graph {
+  article.chart {
     border: 1px solid #DBDBDB
     margin: 30px
   }
 
-  .graph {
+  .chart {
     position: relative
     font-size: 10px
 
