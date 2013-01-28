@@ -26,11 +26,6 @@ configure do
   set :erb, :escape_html => true
 end
 
-configure :production do
-  use Rack::SslEnforcer
-  use Abba::Guard
-end
-
 helpers do
   def title(value = nil)
     @title = value if value
