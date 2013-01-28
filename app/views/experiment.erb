@@ -1,0 +1,56 @@
+<section class="header">
+  <header>
+    <h1><%= @experiment.name %></h1>
+    <h2>Experiment results</h2>
+  </header>
+</section>
+
+
+<section class="experiments">
+  <nav class="nav">
+    <ul>
+      <li><a>Variants</a></li>
+      <li><a>Graph</a></li>
+    </ul>
+  </nav>
+
+  <article>
+    <article class="container">
+      <h3>Variants:</h3>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Conversions / Visitors</th>
+            <th>Conversion rate</th>
+          </tr>
+        </thead>
+
+        <% @variants.each do |variant| %>
+          <tr>
+            <td><%= variant.name %></td>
+            <td><%= variant.completed_count %> / <%= variant.started_count %></td>
+            <td><%= variant.conversion_rate.round(2) %></td>
+          </tr>
+        <% end %>
+      </table>
+    </article>
+
+    <div>
+      <article class="container">
+        <h3>Conversion over time:</h3>
+
+        <div class="graph"></div>
+      </article>
+    </div>
+  </article>
+</section>
+
+<script type="text/javascript" charset="utf-8">
+  jQuery(function($){
+    var Graph = require('admin/graph');
+    var graph = new Graph({el: $('.graph')});
+    graph.render(<%== @variant_graph.to_json %>);
+  });
+</script>

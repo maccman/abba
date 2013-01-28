@@ -1,0 +1,28 @@
+<section class="header">
+  <header>
+    <h1>Experiments</h1>
+    <h2>All your a/b experiments and results</h2>
+  </header>
+</section>
+
+<section class="experiments">
+  <article class="container">
+    <h3>Experiments</h3>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+        </tr>
+      </thead>
+
+      <% @experiments.each do |experiment| %>
+        <tr>
+          <td>1</td>
+          <td><a href="/experiment/<%= experiment.name %>"><%= experiment.name %></a></td>
+        </tr>
+      <% end %>
+    </table>
+  </article>
+</section>

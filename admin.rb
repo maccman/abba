@@ -17,6 +17,9 @@ configure do
     'development' => {'uri' => 'mongodb://localhost:27017/abba-development'}
   }, settings.environment.to_s)
 
+  Catapult.environment.append_path(settings.root  + '/app/assets/javascripts')
+  Catapult.environment.append_path(settings.root  + '/app/assets/stylesheets')
+
   set :views, settings.root + '/app/views'
   set :show_exceptions, true
   set :erb, :escape_html => true
@@ -25,12 +28,18 @@ end
 # Router
 
 get '/' do
-  @tests = Abba::Test.all
-  erb :tests
+  redirect '/experiments'
 end
 
-get '/test/:name' do
-  @test     = Abba::Test.find_by_name!(params[:name])
-  @variants = @test.variants.all
-  erb :test
+get '/experiments' do
+  @experiments = Abba::Experiment.all
+  erb :experiments
+end
+
+get '/experiment/:name' do
+  @experiment = Abba::Experiment.find_by_name!(params[:name])
+  @variants   = @experiment.variants.all
+  @variant_graph = @experiment.granular_conversion_rate(7.days.ago, Time.current)
+
+  erb :experiment
 end

@@ -3,7 +3,7 @@ class @Abba
 
   constructor: (name, options = {}) ->
     unless name
-      throw new Error('Test name required')
+      throw new Error('Experiment name required')
 
     # Force constructor
     if this not instanceof Abba
@@ -53,8 +53,8 @@ class @Abba
 
       throw new Error('No valid variant') unless variant
 
-      # Record which test was run on the server
-      @request('/start', test: @name, variant: variant.name)
+      # Record which experiment was run on the server
+      @request('/start', experiment: @name, variant: variant.name)
 
       # Set the variant we chose as a cookie
       @setVariantCookie(variant.name)
@@ -67,10 +67,14 @@ class @Abba
     # Optionally pass a name, or read from the cookie
     name or= @getVariantCookie()
 
-    # Record the test was completed on the server
-    @request('/complete', test: @name, variant: name) if name
+    # Record the experiment was completed on the server
+    @request('/complete', experiment: @name, variant: name) if name
     @removeVariantCookie()
     this
+
+  reset: =>
+    @removeVariantCookie()
+    @result = null
 
   # Private
 
@@ -89,8 +93,10 @@ class @Abba
 
   # Utils
 
-  request: (url, params) =>
-    params = ("#{k}=#{encodeURIComponent(v)}" for k,v of params).join('&')
+  request: (url, params = {}) =>
+    # Prevent caching
+    params.i = new Date().getTime()
+    params   = ("#{k}=#{encodeURIComponent(v)}" for k,v of params).join('&')
     (new Image).src = "#{@constructor.endpoint}#{url}?#{params}"
     true
 

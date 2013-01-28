@@ -1,4 +1,5 @@
 module Abba
-  autoload :Test, 'app/models/test'
+  autoload :Experiment, 'app/models/experiment'
   autoload :Variant, 'app/models/variant'
+  autoload :Request, 'app/models/request'
 end

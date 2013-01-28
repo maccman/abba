@@ -22,6 +22,10 @@ configure do
 end
 
 helpers do
+  def prevent_caching
+    headers['Cache-Control'] = 'no-cache, no-store'
+  end
+
   def send_blank
     send_file './public/blank.gif'
   end
@@ -36,25 +40,27 @@ helpers do
 end
 
 get '/v1/abba.js', :provides => 'application/javascript' do
-  settings.sprockets['index'].to_s
+  settings.sprockets['client/index'].to_s
 end
 
 get '/start', :provides => 'image/gif' do
-  required :test, :variant
+  required :experiment, :variant
 
-  test    = Abba::Test.find_or_create_by_name(params[:test])
-  variant = test.variants.find_or_create_by_name(params[:variant])
-  variant.start!(request.env)
+  experiment = Abba::Experiment.find_or_create_by_name(params[:experiment])
+  variant = experiment.variants.find_or_create_by_name(params[:variant])
+  variant.start!(request)
 
+  prevent_caching
   send_blank
 end
 
 get '/complete', :provides => 'image/gif' do
-  required :test, :variant
+  required :experiment, :variant
 
-  test    = Abba::Test.find_or_create_by_name(params[:test])
-  variant = test.variants.find_or_create_by_name(params[:variant])
-  variant.complete!(request.env)
+  experiment = Abba::Experiment.find_or_create_by_name(params[:experiment])
+  variant = experiment.variants.find_or_create_by_name(params[:variant])
+  variant.complete!(request)
 
+  prevent_caching
   send_blank
 end
