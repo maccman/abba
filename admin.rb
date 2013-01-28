@@ -5,9 +5,11 @@ Bundler.require
 $: << settings.root
 
 require 'sinatra'
-require 'sinatra/reloader' if development?
+require 'sinatra/config_file'
 require 'active_support/json'
 require 'app/abba'
+
+config_file 'config.yml'
 
 configure do
   ActiveSupport.escape_html_entities_in_json = true
@@ -21,8 +23,12 @@ configure do
   Catapult.environment.append_path(settings.root  + '/app/assets/stylesheets')
 
   set :views, settings.root + '/app/views'
-  set :show_exceptions, true
   set :erb, :escape_html => true
+end
+
+configure :production do
+  use Rack::SslEnforcer
+  use Abba::Guard
 end
 
 helpers do
@@ -69,8 +75,8 @@ end
 get '/experiments/:id' do
   @experiment = Abba::Experiment.find(params[:id])
 
-  @start_at   = Date.to_mongo(params[:start_at]).beginning_of_day if params[:start_at]
-  @end_at     = Date.to_mongo(params[:end_at]).end_of_day if params[:end_at]
+  @start_at   = Date.to_mongo(params[:start_at]).beginning_of_day if params[:start_at].present?
+  @end_at     = Date.to_mongo(params[:end_at]).end_of_day if params[:end_at].present?
   @start_at   ||= @experiment.created_at.beginning_of_day
   @end_at     ||= Time.now.utc
 

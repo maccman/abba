@@ -1,5 +1,5 @@
 require './app'
-require './admin' # TODO
+require './admin'
 
 map '/assets' do
   run Catapult.environment

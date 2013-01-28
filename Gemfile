@@ -9,7 +9,4 @@ gem 'bson_ext'
 gem 'eco'
 gem 'useragent'
 gem 'erubis'
-
-# group :development do
-  gem 'debugger'
-# end
+gem 'rack-ssl-enforcer', :require => 'rack/ssl-enforcer'

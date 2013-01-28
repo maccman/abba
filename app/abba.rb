@@ -3,4 +3,5 @@ module Abba
   autoload :Request, 'app/models/request'
   autoload :Variant, 'app/models/variant'
   autoload :VariantPresentor, 'app/models/variant_presentor'
+  autoload :Guard, 'app/middleware/guard'
 end
