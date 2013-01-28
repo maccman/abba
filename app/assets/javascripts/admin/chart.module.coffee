@@ -25,7 +25,7 @@ class Chart extends Controller
         .tickPadding(12)
         .ticks(d3.time.days.utc, 1)
         .orient('bottom')
-        .tickFormat((d, i) -> moment(d).format('MMM Do').toUpperCase())
+        .tickFormat((d, i) -> moment(d).format('MMM Do'))
 
     yAxis = d3.svg.axis()
         .scale(y)
@@ -66,14 +66,16 @@ class Chart extends Controller
         .attr('class', 'y axis')
         .call(yAxis)
 
+    svg.selectAll('.areas')
+        .data(variants)
+        .enter().append('path')
+        .attr('class', (d, i) -> "areas area-#{i}")
+        .attr('d', (d) -> area(d.values))
+
     svgVariant = svg.selectAll('.variants')
         .data(variants)
         .enter().append('g')
         .attr('class', (d, i) -> "variants variant-#{i}")
-
-    svgVariant.append('path')
-        .attr('class', 'area')
-        .attr('d', (d) -> area(d.values))
 
     svgVariant.append('path')
         .attr('class', 'line')

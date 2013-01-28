@@ -9,13 +9,6 @@ class @Abba
     if this not instanceof Abba
       return new Abba(name, options)
 
-    # Return existing instance if available
-    instances = @constructor.instances or= {}
-    if existing = instances[name]
-      return existing
-    else
-      instances[name] = this
-
     @name     = name
     @options  = options
     @variants = []

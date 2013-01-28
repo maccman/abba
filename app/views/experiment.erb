@@ -40,7 +40,7 @@
           %>
 
           <tr>
-            <td class="name"><%= variant.control? ? 'Control' : variant.name %></td>
+            <td class="name"><%= variant.full_name %></td>
             <td class="overall"><%= variant.completed_count %> / <%= variant.started_count %></td>
             <td class="conversion <%= dir(percent_conversion_rate) %>"><%= percent_conversion_rate %></td>
             <td class="probability <%= dir(probability) %>"><%= probability %></td>
