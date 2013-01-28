@@ -35,6 +35,14 @@ helpers do
     return if !value || value.zero?
     value > 0 ? 'positive' : 'negative'
   end
+
+  def required(*atts)
+    atts.each do |a|
+      if !params[a] || params[a].empty?
+        halt "#{a} required"
+      end
+    end
+  end
 end
 
 # Router
@@ -49,15 +57,24 @@ get '/experiments' do
 end
 
 get '/experiments/:id/chart', :provides => 'application/json' do
-  @experiment = Abba::Experiment.find(params[:id])
-  start_at    = @experiment.created_at.beginning_of_day
-  end_at      = Time.now.utc
-  @experiment.granular_conversion_rate(start_at, end_at).to_json
+  required :start_at, :end_at
+
+  experiment = Abba::Experiment.find(params[:id])
+  start_at   = Date.to_mongo(params[:start_at]).beginning_of_day
+  end_at     = Date.to_mongo(params[:end_at]).end_of_day
+
+  experiment.granular_conversion_rate(start_at: start_at, end_at: end_at).to_json
 end
 
 get '/experiments/:id' do
   @experiment = Abba::Experiment.find(params[:id])
-  @variants   = @experiment.variants.all
-  @variants   = @variants.sort_by(&:conversion_rate).reverse
+
+  @start_at   = Date.to_mongo(params[:start_at]).beginning_of_day if params[:start_at]
+  @end_at     = Date.to_mongo(params[:end_at]).end_of_day if params[:end_at]
+  @start_at   ||= @experiment.created_at.beginning_of_day
+  @end_at     ||= Time.now.utc
+
+  @variants   = Abba::VariantPresentor::Group.new(@experiment, start_at: @start_at, end_at: @end_at)
+
   erb :experiment
 end

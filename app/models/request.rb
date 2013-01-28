@@ -19,6 +19,12 @@ module Abba
       where(:created_at => {:$gt => start_at, :$lt => end_at})
     }
 
+    scope :browser, lambda {|browser|
+      where(:browser => browser)
+    }
+
+    scope :mobile, where(:mobile => true)
+
     def request=(request)
       self.url             = request.referrer
       self.ip              = request.ip

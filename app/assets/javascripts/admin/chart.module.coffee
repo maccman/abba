@@ -4,7 +4,9 @@ $          = jQuery
 
 class Chart extends Controller
   fetch: =>
-    $.getJSON("/experiments/#{@options.model.id}/chart", @render)
+    url  = "/experiments/#{@options.model.id}/chart"
+    data = {start_at: @options.startAt, end_at: @options.endAt}
+    $.getJSON(url, data, @render)
 
   render: (variants) =>
     @$el.empty()

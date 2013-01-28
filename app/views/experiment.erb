@@ -11,10 +11,37 @@
 
 <section class="experiment">
   <nav class="nav">
-    <ul>
-      <li><a>Variants</a></li>
-      <li><a>Chart</a></li>
-    </ul>
+    <form method="get">
+      <article class="container">
+        <h3>Time period</h3>
+
+        <label>
+          <span>From</span>
+          <input type="date" name="start_at" value="<%= @start_at.strftime('%F') %>">
+        </label>
+
+        <label>
+          <span>To</span>
+          <input type="date" name="end_at" value="<%= @end_at.strftime('%F') %>">
+        </label>
+      </article>
+
+      <article class="container timePeriod">
+        <h3>Browser</h3>
+
+        <select name="browser">
+          <option value="chrome">Chrome</option>
+          <option value="firefox">Firefox</option>
+          <option value="ie">All IE</option>
+          <option value="ie6">IE 6</option>
+          <option value="ie7">IE 7</option>
+          <option value="ie8">IE 8</option>
+          <option value="ie9">IE 9</option>
+          <option value="ie10">IE 10</option>
+          <option value="mobile">Mobile</option>
+        </select>
+      </article>
+    </form>
   </nav>
 
   <article>
@@ -33,18 +60,12 @@
         </thead>
 
         <% @variants.each do |variant| %>
-          <%
-            percent_conversion_rate = variant.percent_conversion_rate
-            probability             = variant.probability
-            percent_difference      = variant.percent_difference
-          %>
-
           <tr>
-            <td class="name"><%= variant.full_name %></td>
+            <td class="name"><%= variant.name %></td>
             <td class="overall"><%= variant.completed_count %> / <%= variant.started_count %></td>
-            <td class="conversion <%= dir(percent_conversion_rate) %>"><%= percent_conversion_rate %></td>
-            <td class="probability <%= dir(probability) %>"><%= probability %></td>
-            <td class="difference <%= dir(percent_difference) %>"><%= percent_difference %></td>
+            <td class="conversion <%= dir(variant.percent_conversion_rate) %>"><%= variant.percent_conversion_rate %></td>
+            <td class="probability <%= dir(variant.probability) %>"><%= variant.probability %></td>
+            <td class="difference <%= dir(variant.percent_difference) %>"><%= variant.percent_difference %></td>
           </tr>
         <% end %>
       </table>
@@ -60,13 +81,23 @@
   </article>
 </section>
 
-<script type="text/javascript" charset="utf-8">
+<script>
   jQuery(function($){
     var Chart = require('admin/chart');
     var chart = new Chart({
-      el:    $('.chart'),
-      model: <%== @experiment.to_json %>
+      el:      $('.chart'),
+      model:   <%== @experiment.to_json %>,
+      startAt: <%== @start_at.strftime('%F').inspect %>,
+      endAt:   <%== @end_at.strftime('%F').inspect %>
     });
     chart.fetch();
+  });
+</script>
+
+<script>
+  jQuery(function($){
+    $('form').on('change', function(){
+      $(this).submit();
+    });
   });
 </script>
