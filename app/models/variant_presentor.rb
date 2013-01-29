@@ -74,15 +74,15 @@ module Abba
 
     protected
 
-    def started_requests(options = {})
+    def started_requests
       query = variant.started_requests
 
       if options[:start_at] && options[:end_at]
         query = query.for_period(options[:start_at], options[:end_at])
       end
 
-      if options[:browser]
-        query = query.browser(options[:browser])
+      if options[:tranche]
+        query = query.tranche(options[:tranche])
       end
 
       query
@@ -95,8 +95,8 @@ module Abba
         query = query.for_period(options[:start_at], options[:end_at])
       end
 
-      if options[:browser]
-        query = query.browser(options[:browser])
+      if options[:tranche]
+        query = query.tranche(options[:tranche])
       end
 
       query
@@ -109,6 +109,8 @@ module Abba
       nc = control.started_count
       p  = conversion_rate
       n  = started_count
+
+      return if nc.zero? || n.zero?
 
       (p - pc) / ((p * (1-p)/n) + (pc * (1-pc)/nc)).abs ** 0.5
     end

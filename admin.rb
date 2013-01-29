@@ -44,6 +44,10 @@ helpers do
     value > 0 ? 'positive' : 'negative'
   end
 
+  def selected(value, present)
+    ' selected ' if value == present
+  end
+
   def required(*atts)
     atts.each do |a|
       if !params[a] || params[a].empty?
@@ -100,8 +104,11 @@ get '/admin/experiments/:id/chart', :provides => 'application/json' do
   experiment = Abba::Experiment.find(params[:id])
   start_at   = Date.to_mongo(params[:start_at]).beginning_of_day
   end_at     = Date.to_mongo(params[:end_at]).end_of_day
+  tranche    = params[:tranche].present? ? params[:tranche].to_sym : nil
 
-  experiment.granular_conversion_rate(start_at: start_at, end_at: end_at).to_json
+  experiment.granular_conversion_rate(
+    start_at: start_at, end_at: end_at, tranche: tranche
+  ).to_json
 end
 
 get '/admin/experiments/:id' do
@@ -109,10 +116,20 @@ get '/admin/experiments/:id' do
 
   @start_at   = Date.to_mongo(params[:start_at]).beginning_of_day if params[:start_at].present?
   @end_at     = Date.to_mongo(params[:end_at]).end_of_day if params[:end_at].present?
-  @start_at   ||= @experiment.created_at.beginning_of_day
-  @end_at     ||= Time.now.utc
+  @start_at ||= @experiment.created_at.beginning_of_day
+  @end_at   ||= Time.now.utc
 
-  @variants   = Abba::VariantPresentor::Group.new(@experiment, start_at: @start_at, end_at: @end_at)
+  @tranche    = params[:tranche].present? ? params[:tranche].to_sym : nil
+
+  @variants   = Abba::VariantPresentor::Group.new(
+    @experiment, start_at: @start_at, end_at: @end_at, tranche: @tranche
+  )
+
+  @params = {
+    start_at: @start_at.strftime('%F'),
+    end_at:   @end_at.strftime('%F'),
+    tranche:  @tranche
+  }
 
   erb :experiment
 end

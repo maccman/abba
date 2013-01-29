@@ -2,6 +2,19 @@ module Abba
   class Request
     include MongoMapper::Document
 
+    TRANCHES = {
+      chrome:  {browser: 'Chrome'},
+      safari:  {browser: 'Safari'},
+      firefox: {browser: 'Firefox'},
+      ie:      {browser: 'Internet Explorer'},
+      ie6:     {browser: 'Internet Explorer', browser_version: '6.0'},
+      ie7:     {browser: 'Internet Explorer', browser_version: '7.0'},
+      ie8:     {browser: 'Internet Explorer', browser_version: '8.0'},
+      ie9:     {browser: 'Internet Explorer', browser_version: '9.0'},
+      ie10:    {browser: 'Internet Explorer', browser_version: '10.0'},
+      mobile:  {mobile: true}
+    }
+
     key :url
     key :ip
     key :user_agent
@@ -19,11 +32,9 @@ module Abba
       where(:created_at => {:$gt => start_at, :$lt => end_at})
     }
 
-    scope :browser, lambda {|browser|
-      where(:browser => browser)
+    scope :tranche, lambda {|name|
+      where(TRANCHES[name] || {})
     }
-
-    scope :mobile, where(:mobile => true)
 
     def request=(request)
       self.url             = request.referrer
