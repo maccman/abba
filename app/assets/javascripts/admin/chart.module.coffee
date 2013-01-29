@@ -91,6 +91,8 @@ class Chart extends Controller
         .attr('cy', (d, i) -> y(d.rate))
         .attr('r', 4)
 
+    # Legend
+
     $legend = $('<ul />').addClass('legend')
     @$el.append($legend)
 

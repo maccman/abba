@@ -123,5 +123,5 @@ do ->
 
   # Find Abba's endpoint from the script tag
   scripts = document.getElementsByTagName('script')
-  scripts = (script.src for script in scripts when /abba\.js$/.test(script.src))
+  scripts = (script.src for script in scripts when /\/abba\.js$/.test(script.src))
   Abba.endpoint = "//#{host(scripts[0])}" if scripts[0]
