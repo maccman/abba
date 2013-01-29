@@ -19,9 +19,16 @@ configure do
     'development' => {'uri' => 'mongodb://localhost:27017/abba-development'}
   }, settings.environment.to_s)
 
-  Catapult.environment.append_path('app/assets/javascripts')
-  Catapult.environment.append_path('app/assets/stylesheets')
+  env = Sprockets::Environment.new(settings.root)
 
+  env.append_path('app/assets/javascripts')
+  env.append_path('app/assets/stylesheets')
+  env.append_path('vendor/assets/javascripts')
+  env.append_path('vendor/assets/stylesheets')
+
+  Stylus.setup(env)
+
+  set :sprockets, env
   set :views, 'app/views'
   set :erb, :escape_html => true
 end
@@ -79,7 +86,7 @@ end
 
 get '/assets/*' do
   env['PATH_INFO'].sub!(%r{^/assets}, '')
-  Catapult.environment.call(env)
+  settings.sprockets.call(env)
 end
 
 get '/admin/experiments' do
@@ -108,6 +115,10 @@ get '/admin/experiments/:id' do
   @variants   = Abba::VariantPresentor::Group.new(@experiment, start_at: @start_at, end_at: @end_at)
 
   erb :experiment
+end
+
+get '/admin' do
+  redirect '/admin/experiments'
 end
 
 get '/' do

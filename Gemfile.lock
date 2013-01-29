@@ -98,10 +98,13 @@ PLATFORMS
 DEPENDENCIES
   bson_ext
   catapult
+  coffee-script
   eco
   erubis
   mongo_mapper
   sinatra
   sinatra-contrib
+  sprockets
+  sprockets-commonjs
   thin
   useragent

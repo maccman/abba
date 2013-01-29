@@ -16,8 +16,9 @@ configure do
     'development' => {'uri' => 'mongodb://localhost:27017/abba-development'}
   }, settings.environment.to_s)
 
-  set :sprockets, Sprockets::Environment.new
-  settings.sprockets.append_path('app/assets/javascripts')
+  env = Sprockets::Environment.new(settings.root)
+  env.append_path('app/assets/javascripts')
+  set :sprockets, env
 end
 
 helpers do
