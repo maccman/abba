@@ -24,7 +24,6 @@ configure do
   env.append_path('app/assets/javascripts')
   env.append_path('app/assets/stylesheets')
   env.append_path('vendor/assets/javascripts')
-  env.append_path('vendor/assets/stylesheets')
 
   Stylus.setup(env)
 
@@ -64,9 +63,12 @@ helpers do
   end
 
   def authorized?
-    @auth ||=  Rack::Auth::Basic::Request.new(request.env)
-    @auth.provided? && @auth.basic? &&
-      @auth.credentials && @auth.credentials == [settings.username, settings.password]
+    return true if !settings.username?
+
+    auth =  Rack::Auth::Basic::Request.new(request.env)
+    return false unless auth.provided? && auth.basic? && auth.credentials
+
+    auth.credentials == [settings.username, settings.password]
   end
 
   def ssl_enforce!

@@ -31,6 +31,7 @@ class Chart extends Controller
     yAxis = d3.svg.axis()
         .scale(y)
         .ticks(5)
+        .tickPadding(5)
         .orient('left')
 
     line = d3.svg.line()
