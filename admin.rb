@@ -114,15 +114,18 @@ end
 get '/admin/experiments/:id' do
   @experiment = Abba::Experiment.find(params[:id])
 
-  @start_at   = Date.to_mongo(params[:start_at]).beginning_of_day if params[:start_at].present?
-  @end_at     = Date.to_mongo(params[:end_at]).end_of_day if params[:end_at].present?
-  @start_at ||= @experiment.created_at.beginning_of_day
+  @start_at   = Date.to_mongo(params[:start_at]) if params[:start_at].present?
+  @end_at     = Date.to_mongo(params[:end_at]) if params[:end_at].present?
+  @start_at ||= @experiment.created_at
   @end_at   ||= Time.now.utc
 
+  @start_at   = @start_at.beginning_of_day
+  @end_at     = @end_at.end_of_day
   @tranche    = params[:tranche].present? ? params[:tranche].to_sym : nil
 
   @variants   = Abba::VariantPresentor::Group.new(
-    @experiment, start_at: @start_at, end_at: @end_at, tranche: @tranche
+    @experiment, start_at: @start_at,
+    end_at: @end_at, tranche: @tranche
   )
 
   @params = {
