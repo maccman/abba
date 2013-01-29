@@ -10,12 +10,38 @@ section.experiment {
 
   form {
     input[type=date] {
-      width: 170px
+      font-family: "HelveticaNeue", Helvetica, Arial, sans-serif;
+      min-width: 145px
     }
 
-    select {
+    label {
       display: block
-      min-width: 130px
+      overflow: hidden
+      margin-bottom: 5px
+      hbox()
+
+      span {
+        display: block
+        width: 80px
+        line-height: 25px
+
+        &:after {
+          content: ':'
+        }
+      }
+
+      input, select {
+        box-flex: 1
+      }
+
+      select {
+        display: block
+        margin-top: 3px
+      }
+
+      &:last-child {
+        margin-bottom: 0
+      }
     }
   }
 

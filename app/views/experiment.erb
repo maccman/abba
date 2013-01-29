@@ -27,21 +27,25 @@
       </article>
 
       <article class="container">
-        <h3>Browser</h3>
+        <h3>Filter</h3>
 
-        <select name="tranche">
-          <option value="">All</option>
-          <option <%= selected(:chrome, @tranche) %> value="chrome">Chrome</option>
-          <option <%= selected(:safari, @tranche) %> value="safari">Safari</option>
-          <option <%= selected(:firefox, @tranche) %> value="firefox">Firefox</option>
-          <option <%= selected(:ie, @tranche) %> value="ie">All IE</option>
-          <option <%= selected(:ie6, @tranche) %> value="ie6">IE 6</option>
-          <option <%= selected(:ie7, @tranche) %> value="ie7">IE 7</option>
-          <option <%= selected(:ie8, @tranche) %> value="ie8">IE 8</option>
-          <option <%= selected(:ie9, @tranche) %> value="ie9">IE 9</option>
-          <option <%= selected(:ie10, @tranche) %> value="ie10">IE 10</option>
-          <option <%= selected(:mobile, @tranche) %> value="mobile">Mobile</option>
-        </select>
+        <label>
+          <span>Browser</span>
+
+          <select name="tranche">
+            <option value="">All</option>
+            <option <%= selected(:chrome, @tranche) %> value="chrome">Chrome</option>
+            <option <%= selected(:safari, @tranche) %> value="safari">Safari</option>
+            <option <%= selected(:firefox, @tranche) %> value="firefox">Firefox</option>
+            <option <%= selected(:ie, @tranche) %> value="ie">All IE</option>
+            <option <%= selected(:ie6, @tranche) %> value="ie6">IE 6</option>
+            <option <%= selected(:ie7, @tranche) %> value="ie7">IE 7</option>
+            <option <%= selected(:ie8, @tranche) %> value="ie8">IE 8</option>
+            <option <%= selected(:ie9, @tranche) %> value="ie9">IE 9</option>
+            <option <%= selected(:ie10, @tranche) %> value="ie10">IE 10</option>
+            <option <%= selected(:mobile, @tranche) %> value="mobile">Mobile</option>
+          </select>
+        </label>
       </article>
     </form>
   </nav>

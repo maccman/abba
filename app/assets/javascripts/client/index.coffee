@@ -14,7 +14,7 @@ class @Abba
     @variants = []
 
   variant: (name, callback) ->
-    unless name
+    typeof name is 'string'
       throw new Error('Variant name required')
 
     @variants.push(name: name, callback: callback)
@@ -56,8 +56,8 @@ class @Abba
       # Set the variant we chose as a cookie
       @setVariantCookie(variant.name)
 
-    variant?.callback()
-
+    variant?.callback?()
+    @chosen = variant
     this
 
   complete: (name) =>
