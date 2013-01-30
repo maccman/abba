@@ -1,49 +1,24 @@
+vendor(prop, args)
+  -webkit-{prop}: args
+  -moz-{prop}: args
+  -ms-{prop}: args
+  -o-{prop}: args
+  {prop}: args
+
 border-radius()
-  -moz-border-radius: arguments
-  -webkit-border-radius: arguments
-  border-radius: arguments
+  vendor('border-radius', arguments)
 
-/* Vertical Background Gradient */
-vbg-gradient(fc = #FFF, tc = #FFF)
-  background-color: tc
-  background-image: -webkit-gradient(linear, left top, left bottom, from(fc), to(tc))
-  background-image: -webkit-linear-gradient(top, fc, tc)
-  background-image: -moz-linear-gradient(top, fc, tc)
-  background-image: -ms-linear-gradient(top, fc, tc)
-  background-image: -o-linear-gradient(top, fc, tc)
-  background-image: linear-gradient(top, fc, tc)
-
-/* Horizontal Background Gradient */
-hbg-gradient(fc = #FFF, tc = #FFF)
-  background-color: tc
-  background-image: -webkit-gradient(linear, left top, right top, from(fc), to(tc))
-  background-image: -webkit-linear-gradient(left, fc, tc)
-  background-image: -moz-linear-gradient(left, fc, tc)
-  background-image: -ms-linear-gradient(left, fc, tc)
-  background-image: -o-linear-gradient(left, fc, tc)
-  background-image: linear-gradient(left, fc, tc)
-
-gradient()
-  background-image: -webkit-linear-gradient(arguments)
-  background-image: -moz-linear-gradient(arguments)
-  background-image: -ms-linear-gradient(arguments)
-  background-image: -o-linear-gradient(arguments)
-  background-image: linear-gradient(arguments)
+linear-gradient()
+  add-property('background-image', '-webkit-linear-gradient(%s)' % unquote(join(', ', arguments)))
+  add-property('background-image', '-moz-linear-gradient(%s)' % unquote(join(', ', arguments)))
+  add-property('background-image', '-ms-linear-gradient(%s)' % unquote(join(', ', arguments)))
+  add-property('background-image', '-o-linear-gradient(%s)' % unquote(join(', ', arguments)))
 
 box-shadow()
-  -moz-box-shadow: arguments
-  -webkit-box-shadow: arguments
-  box-shadow: arguments
-
-inset-box-shadow()
-  -moz-box-shadow: inset arguments
-  -webkit-box-shadow: inset arguments
-  box-shadow: inset arguments
+  vendor('box-shadow', arguments)
 
 box-flex(s = 0)
-  -webkit-box-flex: s
-  -moz-box-flex: s
-  box-flex: s
+  vendor('box-flex', s)
 
 hbox()
   display: -webkit-box
@@ -66,52 +41,24 @@ vbox()
   -moz-box-align: stretch
 
 border-box()
-  -webkit-box-sizing: border-box
-  -moz-box-sizing: border-box
-  box-sizing: border-box
+  vendor('box-sizing', 'border-box')
 
 transition()
-  -webkit-transition: arguments
-  -moz-transition: arguments
-  transition: arguments
+  vendor('transition', arguments)
 
 ellipsis()
   text-overflow: ellipsis
   overflow: hidden
   white-space:nowrap
 
-inset-line(opacity = 0.4, size = 1px)
-  inset-box-shadow(0, size, 0, rgba(255, 255, 255, opacity))
-
-outset-line(opacity = 0.4, size = 1px)
-  box-shadow(0, size, 0, rgba(255, 255, 255, opacity))
-
 box-pack(type = center)
-  -webkit-box-pack: type
-  -moz-box-pack: type
-  box-pack: type
+  vendor('box-pack', arguments)
 
 transform(tr)
-  -webkit-transform: tr
-  -moz-transform: tr
-  -ms-transform: tr
-  -o-transform: tr
-  transform: tr
+  vendor('transform', arguments)
 
 appearance()
-  -webkit-appearance: arguments
-  -moz-appearance: arguments
-  -ms-appearance: arguments
-  -o-appearance: arguments
-  appearance: arguments
+  vendor('appearance', arguments)
 
-user-select(type)
-  -moz-user-select: type;
-  -khtml-user-select: type;
-  -webkit-user-select: type;
-  -ms-user-select: type;
-  -o-user-select: type;
-  user-select: type;
-
-hacel()
-  transform(translate3d(0,0,0))
+user-select()
+  vendor('user-select', arguments)
