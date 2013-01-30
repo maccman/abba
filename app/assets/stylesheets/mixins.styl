@@ -13,6 +13,7 @@ linear-gradient()
   add-property('background-image', '-moz-linear-gradient(%s)' % unquote(join(', ', arguments)))
   add-property('background-image', '-ms-linear-gradient(%s)' % unquote(join(', ', arguments)))
   add-property('background-image', '-o-linear-gradient(%s)' % unquote(join(', ', arguments)))
+  s('linear-gradient(%s)' % unquote(join(', ', arguments)))
 
 box-shadow()
   vendor('box-shadow', arguments)
@@ -41,7 +42,7 @@ vbox()
   -moz-box-align: stretch
 
 border-box()
-  vendor('box-sizing', 'border-box')
+  vendor('box-sizing', unquote('border-box'))
 
 transition()
   vendor('transition', arguments)
