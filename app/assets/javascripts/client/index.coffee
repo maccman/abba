@@ -14,7 +14,7 @@ class @Abba
     @variants = []
 
   variant: (name, callback) ->
-    typeof name is 'string'
+    if typeof name isnt 'string'
       throw new Error('Variant name required')
 
     @variants.push(name: name, callback: callback)
