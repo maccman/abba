@@ -1,6 +1,6 @@
 # Abba
 
-Abba is a simple a/b testing self-hosted framework, built to help improve your site's conversion.
+Abba is a simple a/b testing self-hosted framework built to help improve conversion rates on your site.
 
 * Simple JavaScript API
 * Multi variant support
