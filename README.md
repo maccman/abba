@@ -38,6 +38,20 @@ Once the user has successfully completed the experiment, say paid and navigated 
 
 You can find a more complete example under `./public/test`.
 
+## TLDR example
+
+    <script src="//my-abba.herokuapp.com/v1/abba.js"></script>
+
+    Abba('Checkout')
+      .control()
+      .variant('Text - Complete Purchase', function(){
+        $('form button').text('Complete Purchase');
+      })
+      .variant('Color - Green', function(){
+        $('form button').css({background: 'green'});
+      })
+      .start();
+
 ## Setup
 
 Requirements:
@@ -54,7 +68,8 @@ To run locally:
 
 ## Heroku 10 seconds setup
 
-    heroku create myapp
+    git clone git://github.com/stripe/abba.git && cd abba
+    heroku create
     heroku addons:add mongohq:sandbox
     git push heroku master
     heroku open

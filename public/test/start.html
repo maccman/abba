@@ -1,24 +1,18 @@
 <script src="/v1/abba.js" type="text/javascript" charset="utf-8"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 
-<div id="tests">
-  <div id="control"><h1>The control was chosen!</h1></div>
-  <div id="variant1"><h1>&#x27;Variant 1&#x27; was chosen!</h1></div>
-  <div id="variant2"><h1>&#x27;Variant 2&#x27; was chosen!</h1></div>
+<div id="test">
+  <h1>The control was chosen!</h1>
 </div>
 
 <script type="text/javascript" charset="utf-8">
-  $('#tests').children().hide()
-
   Abba('My Checkout')
-    .control(function(){
-      $('#control').show();
-    })
+    .control()
     .variant('Variant 1', function(){
-      $('#variant1').show();
+      $('#test').text('Variant 1 was chosen!');
     })
     .variant('Variant 2', function(){
-      $('#variant2').show();
+      $('#test').text('Variant 2 was chosen!');
     })
     .start();
 </script>
