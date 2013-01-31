@@ -72,7 +72,7 @@ helpers do
   end
 
   def ssl_enforce!
-    unless request.secure?
+    if !request.secure? && settings.ssl
       redirect "https://#{request.host}#{request.fullpath}"
     end
   end
