@@ -8,6 +8,28 @@ Abba is a simple a/b testing self-hosted framework, built to help improve your s
 
 ![Screenshot](http://stripe.github.com/abba/screenshot.png)
 
+## Setup
+
+Requirements:
+
+* Ruby 1.9.3
+* Mongo
+
+The default username and password are `guard` / `llama`. Change these in `config.yml`, unless you want everybody to access your test results. SSL is required in an production environment by default.
+
+To run locally:
+
+    bundle install
+    thin start
+
+## Heroku 10 seconds setup
+
+    git clone git://github.com/stripe/abba.git && cd abba
+    heroku create
+    heroku addons:add mongohq:sandbox
+    git push heroku master
+    heroku open
+
 ## A/B testing API
 
 First include abba.js using a script tag. The host of this url will need to point to wherever you deployed the app.
@@ -36,40 +58,18 @@ Once the user has successfully completed the experiment, say paid and navigated 
       Abba('test name').complete();
     </script>
 
-You can find a more complete example under `./public/test`.
-
 ## TLDR example
 
     <script src="//my-abba.herokuapp.com/v1/abba.js"></script>
 
     Abba('Checkout')
       .control()
-      .variant('Text - Complete Purchase', function(){
+      .variant('Text: Complete Purchase', function(){
         $('form button').text('Complete Purchase');
       })
-      .variant('Color - Green', function(){
+      .variant('Color: green', function(){
         $('form button').css({background: 'green'});
       })
       .start();
 
-## Setup
-
-Requirements:
-
-* Ruby 1.9.3
-* Mongo
-
-The default username and password are `guard` / `llama`. Change these in `config.yml`, unless you want everybody to access your test results. SSL is required in an production environment by default.
-
-To run locally:
-
-    bundle install
-    thin start
-
-## Heroku 10 seconds setup
-
-    git clone git://github.com/stripe/abba.git && cd abba
-    heroku create
-    heroku addons:add mongohq:sandbox
-    git push heroku master
-    heroku open
+You can find a more complete example under `./public/test`.
