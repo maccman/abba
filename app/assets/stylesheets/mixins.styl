@@ -41,8 +41,8 @@ vbox()
   -moz-box-orient: vertical
   -moz-box-align: stretch
 
-border-box()
-  vendor('box-sizing', unquote('border-box'))
+box-sizing(type)
+  vendor('box-sizing', type)
 
 transition()
   vendor('transition', arguments)
