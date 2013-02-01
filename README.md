@@ -78,8 +78,18 @@ Once the user has successfully completed the experiment, say paid and navigated 
 
 You can find a more complete example under `./public/test`.
 
+## Options
+
+If set the `persist` option to `true`, then the experiment won't be reset once it has completed. In other words, that visitor will always see that particular variant, and no more results will be recorded for that visitor.
+
+    <script>
+      Abba('Pricing', {persist: true}).complete();
+    </script>
+
 ## Credits
 
-https://github.com/assaf/vanity
-Bootstrap
-http://buildingfirefoxos.com/
+Thanks to the following projects:
+
+* https://github.com/assaf/vanity
+* https://twitter.github.com/bootstrap
+* http://buildingfirefoxos.com/
