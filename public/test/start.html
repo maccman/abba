@@ -16,5 +16,11 @@
 </script>
 
 <p>
-  <a href="complete.html">Now complete the test.</a>
+  <a href="complete.html" class="complete">Now complete the test.</a>
 </p>
+
+<script type="text/javascript" charset="utf-8">
+  $('a.complete').click(function(){
+    Abba('My Checkout', {delay: true, persist: true}).complete();
+  });
+</script>

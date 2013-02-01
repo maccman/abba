@@ -1,5 +1,11 @@
 # Utils
 
+bind = (element, name, callback) ->
+  if element.addEventListener
+    element.addEventListener(name, callback, false)
+  else
+    element.attachEvent("on#{name}", callback)
+
 host = (url) ->
   # IE6 only resolves resolves hrefs using innerHTML
   parent = document.createElement('div')
@@ -26,6 +32,8 @@ setCookie = (name, value, options = {}) ->
     expires = new Date
     expires.setTime(expires.getTime() + options.expires*24*60*60*1000)
     options.expires = expires
+
+  options.path ?= '/'
 
   value  = (value + '').replace(/[^!#-+\--:<-\[\]-~]/g, encodeURIComponent)
   cookie = encodeURIComponent(name) + '=' + value
@@ -91,8 +99,8 @@ class @Abba
       request(
         "#{@endpoint}/start",
         experiment: @name,
-        variant: variant.name,
-        control: variant.control
+        variant:    variant.name,
+        control:    variant.control or false
       )
 
       # Set the variant we chose as a cookie
@@ -102,40 +110,39 @@ class @Abba
     @chosen = variant
     this
 
-  # Complete experiment on next page
-  completeNext: (name) =>
-    name or= @getVariantCookie()
-    return this unless name
-
-    @setCompleteCookie(name)
-    this
-
   # Complete experiment now
-  complete: (name, preserve = @options.preserve) =>
+  complete: (name) =>
     # Optionally pass a name, or read from the cookie
     name or= @getVariantCookie()
     return this unless name
 
     # If the test has already been completed, return
-    return this if @hasPreserveCompleteCookie()
-
-    # Record the experiment was completed on the server
-    request("#{@endpoint}/complete", experiment: @name, variant: name)
+    return this if @hasPersistCompleteCookie()
 
     # Preserve or reset test
-    if preserve
-      @setPreserveCompleteCookie()
+    if @options.persist
+      @setPersistCompleteCookie()
     else
       @reset()
+
+    # Request complete now, or on the next request
+    if @options.delay
+      @setDelayCompleteCookie(name)
+    else
+      @requestComplete(name)
 
     this
 
   reset: =>
     @removeVariantCookie()
-    @removePreserveCompleteCookie()
+    @removePersistCompleteCookie()
     @result = null
 
   # Private
+
+  requestComplete: (name) =>
+    # Record the experiment was completed on the server
+    request("#{@endpoint}/complete", experiment: @name, variant: name)
 
   # Variant Cookie
 
@@ -143,27 +150,35 @@ class @Abba
     getCookie("abbaVariant_#{@name}")
 
   setVariantCookie: (value) =>
-    setCookie("abbaVariant_#{@name}", value, expires: 5, path: '/')
+    setCookie("abbaVariant_#{@name}", value, expires: 600)
 
   removeVariantCookie: =>
-    setCookie("abbaVariant_#{@name}", '', expires: true, path: '/')
+    setCookie("abbaVariant_#{@name}", '', expires: true)
 
   # Complete Cookie
 
-  setCompleteCookie: (value) =>
-    setCookie("abbaComplete_#{@name}", value, path: '/')
+  setDelayCompleteCookie: (value) =>
+    setCookie('abbaDelayComplete', "#{@name}##{value}")
 
-  setPreserveCompleteCookie: =>
-    setCookie("abbaPreserveComplete_#{@name}", 1, path: '/')
+  setPersistCompleteCookie: =>
+    setCookie("abbaPersistComplete_#{@name}", '1', expires: 600)
 
-  hasPreserveCompleteCookie: =>
-    !!getCookie("abbaPreserveComplete_#{@name}", path: '/')
+  hasPersistCompleteCookie: =>
+    !!getCookie("abbaPersistComplete_#{@name}")
 
-  removePreserveCompleteCookie: =>
-    setCookie("abbaPreserveComplete_#{@name}", '', expires: true, path: '/')
+  removePersistCompleteCookie: =>
+    setCookie("abbaPersistComplete_#{@name}", '', expires: true)
+
+  @delayComplete: =>
+    if result = getCookie('abbaDelayComplete')
+      [name, value] = result.split('#')
+      new this(name).requestComplete(value)
+      setCookie('abbaDelayComplete', '', expires: true)
 
 do ->
   # Find Abba's endpoint from the script tag
   scripts = document.getElementsByTagName('script')
   scripts = (script.src for script in scripts when /\/abba\.js$/.test(script.src))
   Abba.endpoint = "//#{host(scripts[0])}" if scripts[0]
+
+bind(window, 'load', Abba.delayComplete)
