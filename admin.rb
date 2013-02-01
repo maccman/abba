@@ -139,6 +139,13 @@ get '/admin/experiments/:id' do
   erb :experiment
 end
 
+delete '/admin/experiments/:id' do
+  @experiment = Abba::Experiment.find(params[:id])
+  @experiment.destroy
+
+  redirect '/admin/experiments'
+end
+
 get '/admin' do
   redirect '/admin/experiments'
 end

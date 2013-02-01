@@ -42,7 +42,7 @@ Then call `Abba()`, passing in a test name and set up the control test and varia
 
     <script>
       Abba('test name')
-        .control(function(){ /* ... */ })
+        .control('test a', function(){ /* ... */ })
         .variant('test b', function(){ /* ... */ })
         .start();
     </script>

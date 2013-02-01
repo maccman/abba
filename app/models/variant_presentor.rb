@@ -64,8 +64,12 @@ module Abba
       (rate * 100).round(1)
     end
 
+    def id
+      variant.id
+    end
+
     def name
-      control? ? 'Control' : variant.name
+      variant.name
     end
 
     def control?

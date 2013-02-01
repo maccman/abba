@@ -66,7 +66,7 @@
         </thead>
 
         <% @variants.each do |variant| %>
-          <tr>
+          <tr data-id="<%= variant.id %>">
             <td class="name"><%= variant.name %></td>
             <td class="overall"><%= variant.completed_count %> / <%= variant.started_count %></td>
             <td class="conversion <%= dir(variant.percent_conversion_rate) %>"><%= variant.percent_conversion_rate %></td>

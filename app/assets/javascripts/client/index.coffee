@@ -1,3 +1,50 @@
+# Utils
+
+host = (url) ->
+  # IE6 only resolves resolves hrefs using innerHTML
+  parent = document.createElement('div')
+  parent.innerHTML = "<a href=\"#{url}\">x</a>"
+  parser = parent.firstChild
+  "#{parser.host}"
+
+request = (url, params = {}, callback) ->
+  # Prevent caching
+  params.i     = new Date().getTime()
+  params       = ("#{k}=#{encodeURIComponent(v)}" for k,v of params).join('&')
+
+  image        = new Image
+  image.onload = callback if callback
+  image.src    = "#{url}?#{params}"
+
+  true
+
+setCookie = (name, value, options = {}) ->
+  if options.expires is true
+    options.expires = -1
+
+  if typeof options.expires is 'number'
+    expires = new Date
+    expires.setTime(expires.getTime() + options.expires*24*60*60*1000)
+    options.expires = expires
+
+  value  = (value + '').replace(/[^!#-+\--:<-\[\]-~]/g, encodeURIComponent)
+  cookie = encodeURIComponent(name) + '=' + value
+
+  cookie += ';expires=' + options.expires.toGMTString() if options.expires
+  cookie += ';path=' + options.path if options.path
+  document.cookie = cookie
+
+getCookie = (name) ->
+  cookies = document.cookie.split('; ')
+  for cookie in cookies
+    index = cookie.indexOf('=')
+    key   = decodeURIComponent(cookie.substr(0, index))
+    value = decodeURIComponent(cookie.substr(index + 1))
+    return value if key is name
+  null
+
+# Public
+
 class @Abba
   @endpoint: 'http://localhost:4567'
 
@@ -13,6 +60,8 @@ class @Abba
     @options  = options
     @variants = []
 
+    @endpoint = @options.endpoint or @constructor.endpoint
+
   variant: (name, callback) ->
     if typeof name isnt 'string'
       throw new Error('Variant name required')
@@ -20,20 +69,8 @@ class @Abba
     @variants.push(name: name, callback: callback)
     this
 
-  control: (callback) =>
-    @variant('_control', callback)
-    this
-
-  a: (callback, name = 'a') =>
-    @variant(name, callback)
-    this
-
-  b: (callback, name = 'b') =>
-    @variant(name, callback)
-    this
-
-  c: (callback, name = 'c') =>
-    @variant(name, callback)
+  control: (name = 'Control', callback) =>
+    @variants.push(name: name, callback: callback, control: true)
     this
 
   start: =>
@@ -51,7 +88,12 @@ class @Abba
       throw new Error('No valid variant') unless variant
 
       # Record which experiment was run on the server
-      @request('/start', experiment: @name, variant: variant.name)
+      request(
+        "#{@endpoint}/start",
+        experiment: @name,
+        variant: variant.name,
+        control: variant.control
+      )
 
       # Set the variant we chose as a cookie
       @setVariantCookie(variant.name)
@@ -60,67 +102,67 @@ class @Abba
     @chosen = variant
     this
 
-  complete: (name) =>
+  # Complete experiment on next page
+  completeNext: (name) =>
+    name or= @getVariantCookie()
+    return this unless name
+
+    @setCompleteCookie(name)
+    this
+
+  # Complete experiment now
+  complete: (name, preserve = @options.preserve) =>
     # Optionally pass a name, or read from the cookie
     name or= @getVariantCookie()
+    return this unless name
+
+    # If the test has already been completed, return
+    return this if @hasPreserveCompleteCookie()
 
     # Record the experiment was completed on the server
-    @request('/complete', experiment: @name, variant: name) if name
-    @removeVariantCookie()
+    request("#{@endpoint}/complete", experiment: @name, variant: name)
+
+    # Preserve or reset test
+    if preserve
+      @setPreserveCompleteCookie()
+    else
+      @reset()
+
     this
 
   reset: =>
     @removeVariantCookie()
+    @removePreserveCompleteCookie()
     @result = null
 
   # Private
 
+  # Variant Cookie
+
   getVariantCookie: =>
-    @getCookie("abbaVariant_#{@name}")
+    getCookie("abbaVariant_#{@name}")
 
   setVariantCookie: (value) =>
-    expires = new Date
-    expires.setTime(expires.getTime() + 5*24*60*60*1000) # 5 days
-    @setCookie("abbaVariant_#{@name}", value, expires: expires, path: '/')
+    setCookie("abbaVariant_#{@name}", value, expires: 5, path: '/')
 
   removeVariantCookie: =>
-    expires = new Date
-    expires.setTime(expires.getTime() - 1)
-    @setCookie("abbaVariant_#{@name}", '', expires: expires, path: '/')
+    setCookie("abbaVariant_#{@name}", '', expires: true, path: '/')
 
-  # Utils
+  # Complete Cookie
 
-  request: (url, params = {}) =>
-    # Prevent caching
-    params.i = new Date().getTime()
-    params   = ("#{k}=#{encodeURIComponent(v)}" for k,v of params).join('&')
-    (new Image).src = "#{@constructor.endpoint}#{url}?#{params}"
-    true
+  setCompleteCookie: (value) =>
+    setCookie("abbaComplete_#{@name}", value, path: '/')
 
-  setCookie: (name, value, options = {}) =>
-    value  = (value + '').replace(/[^!#-+\--:<-\[\]-~]/g, encodeURIComponent)
-    cookie = encodeURIComponent(name) + '=' + value
-    cookie += ';expires=' + options.expires.toGMTString() if options.expires
-    cookie += ';path=' + options.path if options.path
-    document.cookie = cookie
+  setPreserveCompleteCookie: =>
+    setCookie("abbaPreserveComplete_#{@name}", 1, path: '/')
 
-  getCookie: (name) =>
-    cookies = document.cookie.split('; ')
-    for cookie in cookies
-      index = cookie.indexOf('=')
-      key   = decodeURIComponent(cookie.substr(0, index))
-      value = decodeURIComponent(cookie.substr(index + 1))
-      return value if key is name
-    null
+  hasPreserveCompleteCookie: =>
+    !!getCookie("abbaPreserveComplete_#{@name}", path: '/')
+
+  removePreserveCompleteCookie: =>
+    setCookie("abbaPreserveComplete_#{@name}", '', expires: true, path: '/')
 
 do ->
-  host = (url) ->
-    # IE6 only resolves resolves hrefs using innerHTML
-    parent = document.createElement('div')
-    parent.innerHTML = "<a href=\"#{url}\">x</a>"
-    parser = parent.firstChild
-    "#{parser.host}"
-
   # Find Abba's endpoint from the script tag
   scripts = document.getElementsByTagName('script')
   scripts = (script.src for script in scripts when /\/abba\.js$/.test(script.src))

@@ -1,34 +1,30 @@
 module Abba
   class Variant
     include MongoMapper::Document
-    CONTROL = '_control'
 
     key :name
+    key :control, Boolean, :default => false
+    key :started_count, Integer, :default => 0
+    key :completed_count, Integer, :default => 0
 
     timestamps!
 
-    many :started_requests, :as => :started_request, :class => Abba::Request
-    many :completed_requests, :as => :completed_request, :class => Abba::Request
+    has_many :started_requests, :as => :started_request, :class => Abba::Request, :dependent => :destroy
+    has_many :completed_requests, :as => :completed_request, :class => Abba::Request, :dependent => :destroy
 
     validates_presence_of :name
 
     belongs_to :experiment, :class => Abba::Experiment
 
-    scope :control, where(:name => CONTROL)
-
-    def control?
-      name == CONTROL
-    end
-
-    def full_name
-      control? ? 'Control' : name
-    end
+    scope :control, where(:control => true)
 
     def start!(request)
+      self.increment(:started_count => 1)
       self.started_requests.create!(:request => request)
     end
 
     def complete!(request)
+      self.increment(:completed_count => 1)
       self.completed_requests.create!(:request => request)
     end
 

@@ -46,8 +46,9 @@ end
 get '/start', :provides => 'image/gif' do
   required :experiment, :variant
 
-  experiment = Abba::Experiment.find_or_create_by_name(params[:experiment])
-  variant = experiment.variants.find_or_create_by_name(params[:variant])
+  experiment      = Abba::Experiment.find_or_create_by_name(params[:experiment])
+  variant         = experiment.variants.find_by_name(params[:variant])
+  variant       ||= experiment.variants.create!(:name => params[:variant], :control => params[:control])
   variant.start!(request)
 
   prevent_caching
@@ -58,8 +59,9 @@ get '/complete', :provides => 'image/gif' do
   required :experiment, :variant
 
   experiment = Abba::Experiment.find_or_create_by_name(params[:experiment])
-  variant = experiment.variants.find_or_create_by_name(params[:variant])
-  variant.complete!(request)
+
+  variant = experiment.variants.find_by_name(params[:variant])
+  variant.complete!(request) if variant
 
   prevent_caching
   send_blank

@@ -16,15 +16,28 @@
         <tr>
           <th class="index">#</th>
           <th class="name">Name</th>
+          <th class="visitors">Visitors</th>
+          <th class="actions"></th>
         </tr>
       </thead>
 
       <% @experiments.each_with_index do |experiment, i| %>
         <tr>
           <td class="index"><%= i + 1 %></td>
+
           <td class="name">
             <a href="/admin/experiments/<%= experiment.id %>">
               <%= experiment.name %>
+            </a>
+          </td>
+
+          <td class="visitors">
+            <%= experiment.started_count %>
+          </td>
+
+          <td class="actions">
+            <a href="/admin/experiments/<%= experiment.id %>" data-method="delete" data-confirm="Are you sure?">
+              Delete
             </a>
           </td>
         </tr>
@@ -39,7 +52,7 @@
 
 <script>
   Abba('test name')
-    .control(function(){ /* ... */ })
+    .control('test a', function(){ /* ... */ })
     .variant('test b', function(){ /* ... */ })
     .start();
 </script>
