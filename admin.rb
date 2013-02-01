@@ -50,7 +50,7 @@ helpers do
   def required(*atts)
     atts.each do |a|
       if !params[a] || params[a].empty?
-        halt "#{a} required"
+        halt 406, "#{a} required"
       end
     end
   end
