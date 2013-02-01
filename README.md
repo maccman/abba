@@ -30,6 +30,8 @@ To run locally:
     git push heroku master
     heroku open
 
+The default username and password are `guard` / `llama`.
+
 ## A/B testing API
 
 First include abba.js using a script tag. The host of this url will need to point to wherever you deployed the app.
@@ -62,14 +64,22 @@ Once the user has successfully completed the experiment, say paid and navigated 
 
     <script src="//my-abba.herokuapp.com/v1/abba.js"></script>
 
-    Abba('Checkout')
-      .control()
-      .variant('Text: Complete Purchase', function(){
-        $('form button').text('Complete Purchase');
-      })
-      .variant('Color: green', function(){
-        $('form button').css({background: 'green'});
-      })
-      .start();
+    <script>
+      Abba('Checkout')
+        .control()
+        .variant('Text: Complete Purchase', function(){
+          $('form button').text('Complete Purchase');
+        })
+        .variant('Color: green', function(){
+          $('form button').css({background: 'green'});
+        })
+        .start();
+    </script>
 
 You can find a more complete example under `./public/test`.
+
+## Credits
+
+https://github.com/assaf/vanity
+Bootstrap
+http://buildingfirefoxos.com/
