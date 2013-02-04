@@ -50,8 +50,11 @@ module Abba
     end
 
     def probability
+      return unless completed_count >= 25
+
       score = z_score.try(:abs)
       return unless score
+
       probability = Z_TO_PROBABILITY.find { |z,p| score >= z }
       probability ? probability.last : 0
     end
