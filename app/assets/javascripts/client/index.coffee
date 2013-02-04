@@ -119,7 +119,7 @@ class @Abba
     # If the test has already been completed, return
     return this if @hasPersistCompleteCookie()
 
-    # Preserve or reset test
+    # Persist forever or reset test
     if @options.persist
       @setPersistCompleteCookie()
     else
