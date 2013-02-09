@@ -13,6 +13,14 @@
   <nav class="nav">
     <form method="get">
       <article class="container">
+        <h3>Actions</h3>
+
+        <a href="/admin/experiments/<%= @experiment.id %>/toggle" data-method="put" data-confirm="Are you sure?">
+          <%= @experiment.running? ? 'End experiment' : 'Start experiment' %>
+        </a>
+      </article>
+
+      <article class="container">
         <h3>Time period</h3>
 
         <label>

@@ -3,6 +3,7 @@ module Abba
     include MongoMapper::Document
 
     key :name
+    key :running, Boolean, :default => true
     timestamps!
 
     has_many :variants, :class => Abba::Variant, :dependent => :destroy

@@ -113,6 +113,13 @@ get '/admin/experiments/:id/chart', :provides => 'application/json' do
   ).to_json
 end
 
+put '/admin/experiments/:id/toggle' do
+  @experiment = Abba::Experiment.find(params[:id])
+  @experiment.running = !@experiment.running
+  @experiment.save
+  200
+end
+
 get '/admin/experiments/:id' do
   @experiment = Abba::Experiment.find(params[:id])
 
