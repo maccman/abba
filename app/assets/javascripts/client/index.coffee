@@ -81,7 +81,7 @@ class @Abba
     @variants.push(name: name, callback: callback, control: true)
     this
 
-  start: (name) =>
+  start: (name, options = {}) =>
     if previous = @getVariantCookie()
       # Use the same variant as before, don't record anything
       variant = (v for v in @variants when v.name is previous)[0]
@@ -89,16 +89,18 @@ class @Abba
     else if name?
       # Custom variant provided
       variant = (v for v in @variants when v.name is name)[0]
-      variant or= name: name
+      variant or=
+        name:    name
+        control: options.control
       @recordStart(variant)
 
     else
       # Or choose a random one
-      random ?= Math.floor(Math.random() * @variants.length)
+      random  = Math.floor(Math.random() * @variants.length)
       variant = @variants[random]
-      @recordStart(variant)
 
-    throw new Error('No valid variant') unless variant
+      throw new Error('No variants added') unless variant
+      @recordStart(variant)
 
     variant?.callback?()
     @chosen = variant
