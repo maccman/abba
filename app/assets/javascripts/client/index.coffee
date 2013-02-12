@@ -82,31 +82,28 @@ class @Abba
     this
 
   start: (name, options = {}) =>
-    if previous = @getVariantCookie()
+    if variant = @getPreviousVariant()
       # Use the same variant as before, don't record anything
-      variant = (v for v in @variants when v.name is previous)[0]
+      @chooseVariant(variant)
+      return this
 
-    else if name?
+    if name?
       # Custom variant provided
-      variant = (v for v in @variants when v.name is name)[0]
+      variant = @getVariantForName(name)
       variant or=
         name:    name
         control: options.control
-      @recordStart(variant)
 
     else
       # Or choose a random one
       random  = Math.floor(Math.random() * @variants.length)
       variant = @variants[random]
 
-      throw new Error('No variants added') unless variant
-      @recordStart(variant)
-
-    variant?.callback?()
-    @chosen = variant
+    throw new Error('No variants added') unless variant
+    @recordStart(variant)
+    @chooseVariant(variant)
     this
 
-  # Complete experiment now
   complete: (name) =>
     # Optionally pass a name, or read from the cookie
     name or= @getVariantCookie()
@@ -132,6 +129,13 @@ class @Abba
 
   # Private
 
+  getVariantForName: (name) =>
+    (v for v in @variants when v.name is name)[0]
+
+  chooseVariant: (variant) =>
+    variant?.callback?()
+    @chosen = variant
+
   recordStart: (variant) =>
     # Record which experiment was run on the server
     request(
@@ -149,6 +153,10 @@ class @Abba
     request("#{@endpoint}/complete", experiment: @name, variant: name)
 
   # Variant Cookie
+
+  getPreviousVariant: =>
+    if name = @getVariantCookie()
+      @getVariantForName(name)
 
   getVariantCookie: =>
     getCookie("abbaVariant_#{@name}")
