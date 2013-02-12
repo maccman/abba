@@ -82,7 +82,6 @@ class @Abba
     this
 
   start: (name) =>
-    # Choose a random variant
     if previous = @getVariantCookie()
       # Use the same variant as before, don't record anything
       variant = (v for v in @variants when v.name is previous)[0]
@@ -120,18 +119,14 @@ class @Abba
     else
       @reset()
 
-    # Request complete now, or on the next request
-    if @options.delay
-      @setDelayCompleteCookie(name)
-    else
-      @recordComplete(name)
-
+    @recordComplete(name)
     this
 
   reset: =>
     @removeVariantCookie()
     @removePersistCompleteCookie()
     @result = null
+    this
 
   # Private
 
@@ -164,9 +159,6 @@ class @Abba
 
   # Complete Cookie
 
-  setDelayCompleteCookie: (value) =>
-    setCookie('abbaDelayComplete', "#{@name}##{value}")
-
   setPersistCompleteCookie: =>
     setCookie("abbaPersistComplete_#{@name}", '1', expires: 600)
 
@@ -176,16 +168,8 @@ class @Abba
   removePersistCompleteCookie: =>
     setCookie("abbaPersistComplete_#{@name}", '', expires: true)
 
-  @delayComplete: =>
-    if result = getCookie('abbaDelayComplete')
-      [name, value] = result.split('#')
-      new this(name).requestComplete(value)
-      setCookie('abbaDelayComplete', '', expires: true)
-
 do ->
   # Find Abba's endpoint from the script tag
   scripts = document.getElementsByTagName('script')
   scripts = (script.src for script in scripts when /\/abba\.js$/.test(script.src))
   Abba.endpoint = "//#{host(scripts[0])}" if scripts[0]
-
-bind(window, 'load', Abba.delayComplete)
