@@ -81,30 +81,25 @@ class @Abba
     @variants.push(name: name, callback: callback, control: true)
     this
 
-  start: =>
+  start: (name) =>
     # Choose a random variant
-    @result ?= Math.floor(Math.random() * @variants.length)
-
     if previous = @getVariantCookie()
-      # Use the same variant as before
+      # Use the same variant as before, don't record anything
       variant = (v for v in @variants when v.name is previous)[0]
+
+    else if name?
+      # Custom variant provided
+      variant = (v for v in @variants when v.name is name)[0]
+      variant or= name: name
+      @recordStart(variant)
 
     else
       # Or choose a random one
-      variant = @variants[@result]
+      random ?= Math.floor(Math.random() * @variants.length)
+      variant = @variants[random]
+      @recordStart(variant)
 
-      throw new Error('No valid variant') unless variant
-
-      # Record which experiment was run on the server
-      request(
-        "#{@endpoint}/start",
-        experiment: @name,
-        variant:    variant.name,
-        control:    variant.control or false
-      )
-
-      # Set the variant we chose as a cookie
-      @setVariantCookie(variant.name)
+    throw new Error('No valid variant') unless variant
 
     variant?.callback?()
     @chosen = variant
@@ -129,7 +124,7 @@ class @Abba
     if @options.delay
       @setDelayCompleteCookie(name)
     else
-      @requestComplete(name)
+      @recordComplete(name)
 
     this
 
@@ -140,7 +135,19 @@ class @Abba
 
   # Private
 
-  requestComplete: (name) =>
+  recordStart: (variant) =>
+    # Record which experiment was run on the server
+    request(
+      "#{@endpoint}/start",
+      experiment: @name,
+      variant:    variant.name,
+      control:    variant.control or false
+    )
+
+    # Set the variant we chose as a cookie
+    @setVariantCookie(variant.name)
+
+  recordComplete: (name) =>
     # Record the experiment was completed on the server
     request("#{@endpoint}/complete", experiment: @name, variant: name)
 
