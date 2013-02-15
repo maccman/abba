@@ -1,11 +1,5 @@
 # Utils
 
-bind = (element, name, callback) ->
-  if element.addEventListener
-    element.addEventListener(name, callback, false)
-  else
-    element.attachEvent("on#{name}", callback)
-
 host = (url) ->
   # IE6 only resolves resolves hrefs using innerHTML
   parent = document.createElement('div')
