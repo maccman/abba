@@ -110,7 +110,7 @@ class @Abba
       # Or choose a weighted random variant
       totalWeight   = 0
       totalWeight  += v.weight for v in @variants
-      randomWeight  = Math.floor(Math.random() * totalWeight)
+      randomWeight  = Math.random() * totalWeight
       variantWeight = 0
 
       for variant in @variants.sort((a, b) -> a.weight - b.weight)
