@@ -80,24 +80,18 @@ class @Abba
 
     options.name     = name
     options.callback = callback
+    options.weight  ?= 1
 
     @variants.push(options)
     this
 
   control: (name, options, callback) =>
-    if typeof name isnt 'string'
-      throw new Error('Variant name required')
-
     if typeof options isnt 'object'
       callback = options
       options  = {}
 
-    options.name     = name
-    options.callback = callback
     options.control  = true
-
-    @variants.push(options)
-    this
+    @variant(name, options, callback)
 
   continue: =>
     # Use the same variant as before, don't record anything
@@ -121,12 +115,12 @@ class @Abba
     else
       # Or choose a weighted random variant
       totalWeight   = 0
-      totalWeight  += (v.weight ? 1) for v in @variants
+      totalWeight  += v.weight for v in @variants
       randomWeight  = Math.floor(Math.random() * totalWeight)
       variantWeight = 0
 
-      for variant in @variants
-        variantWeight += variant.weight or 0
+      for variant in @variants.sort((a, b) -> a.weight - b.weight)
+        variantWeight += variant.weight
         break if variantWeight >= randomWeight
 
     throw new Error('No variants added') unless variant
