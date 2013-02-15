@@ -9,7 +9,7 @@
     .variant('Variant 1', {weight: 10}, function(){
       $('#test').text('Variant 1 was chosen!');
     })
-    .variant('Variant 2', function(){
+    .variant('Variant 2', {weight: 9}, function(){
       $('#test').text('Variant 2 was chosen!');
     })
     .start();

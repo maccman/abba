@@ -113,7 +113,7 @@ class @Abba
       randomWeight  = Math.random() * totalWeight
       variantWeight = 0
 
-      for variant in @variants.sort((a, b) -> a.weight - b.weight)
+      for variant in @variants
         variantWeight += variant.weight
         break if variantWeight >= randomWeight
 
