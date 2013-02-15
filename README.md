@@ -66,7 +66,7 @@ Once the user has successfully completed the experiment, say paid and navigated 
 
     <script>
       Abba('Checkout')
-        .control()
+        .control('Control')
         .variant('Text: Complete Purchase', function(){
           $('form button').text('Complete Purchase');
         })
@@ -85,6 +85,38 @@ If set the `persist` option to `true`, then the experiment won't be reset once i
     <script>
       Abba('Pricing', {persist: true}).complete();
     </script>
+    
+You can set a variant weight, so some variants are used more than others:
+
+    Abba('My Checkout')
+      .control('Control', {weight: 20})
+      .variant('Variant 1', {weight: 3}, function(){
+        $('#test').text('Variant 1 was chosen!');
+      })
+      .variant('Variant 2', {weight: 3}, function(){
+        $('#test').text('Variant 2 was chosen!');
+      })
+      .start();
+      
+In the case above, the Control will be invoked 20 times more often than the other variants.
+
+You can continue a previously started test using `continue()`.
+
+    Abba('My Checkout')
+      .control()
+      .variant('Variant 1', function(){
+        $('#test').text('Variant 1 was chosen!');
+      })
+      .variant('Variant 2', function(){
+        $('#test').text('Variant 2 was chosen!');
+      })
+      .continue();
+
+Nothing will be recorded if you call `continue()` instead of `start()`. If a variant hasn't been chosen previously, nothing will be executed.
+
+You can reset tests using `reset()`.
+
+    Abba('My Checkout').reset();
 
 ## Credits
 

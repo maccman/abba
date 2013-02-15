@@ -70,21 +70,45 @@ class @Abba
 
     @endpoint = @options.endpoint or @constructor.endpoint
 
-  variant: (name, callback) ->
+  variant: (name, options, callback) ->
     if typeof name isnt 'string'
       throw new Error('Variant name required')
 
-    @variants.push(name: name, callback: callback)
+    if typeof options isnt 'object'
+      callback = options
+      options  = {}
+
+    options.name     = name
+    options.callback = callback
+
+    @variants.push(options)
     this
 
-  control: (name = 'Control', callback) =>
-    @variants.push(name: name, callback: callback, control: true)
+  control: (name, options, callback) =>
+    if typeof name isnt 'string'
+      throw new Error('Variant name required')
+
+    if typeof options isnt 'object'
+      callback = options
+      options  = {}
+
+    options.name     = name
+    options.callback = callback
+    options.control  = true
+
+    @variants.push(options)
+    this
+
+  continue: =>
+    # Use the same variant as before, don't record anything
+    if variant = @getPreviousVariant()
+      @useVariant(variant)
     this
 
   start: (name, options = {}) =>
     if variant = @getPreviousVariant()
       # Use the same variant as before, don't record anything
-      @chooseVariant(variant)
+      @useVariant(variant)
       return this
 
     if name?
@@ -95,13 +119,19 @@ class @Abba
         control: options.control
 
     else
-      # Or choose a random one
-      random  = Math.floor(Math.random() * @variants.length)
-      variant = @variants[random]
+      # Or choose a weighted random variant
+      totalWeight   = 0
+      totalWeight  += (v.weight ? 1) for v in @variants
+      randomWeight  = Math.floor(Math.random() * totalWeight)
+      variantWeight = 0
+
+      for variant in @variants
+        variantWeight += variant.weight or 0
+        break if variantWeight >= randomWeight
 
     throw new Error('No variants added') unless variant
     @recordStart(variant)
-    @chooseVariant(variant)
+    @useVariant(variant)
     this
 
   complete: (name) =>
@@ -132,7 +162,7 @@ class @Abba
   getVariantForName: (name) =>
     (v for v in @variants when v.name is name)[0]
 
-  chooseVariant: (variant) =>
+  useVariant: (variant) =>
     variant?.callback?()
     @chosen = variant
 

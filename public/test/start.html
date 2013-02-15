@@ -5,14 +5,31 @@
 
 <script type="text/javascript" charset="utf-8">
   Abba('My Checkout')
-    .control()
-    .variant('Variant 1', function(){
+    .control('Control', {weight: 20})
+    .variant('Variant 1', {weight: 3}, function(){
       $('#test').text('Variant 1 was chosen!');
     })
-    .variant('Variant 2', function(){
+    .variant('Variant 2', {weight: 3}, function(){
       $('#test').text('Variant 2 was chosen!');
     })
     .start();
+
+  // Reset test
+  // Abba('My Checkout').reset();
+
+  // Continue a previously started test
+  // Abba('My Checkout')
+  //   .control()
+  //   .variant('Variant 1', function(){
+  //     $('#test').text('Variant 1 was chosen!');
+  //   })
+  //   .variant('Variant 2', function(){
+  //     $('#test').text('Variant 2 was chosen!');
+  //   })
+  //   .continue();
+
+  // Chose a specific variant
+  // Abba('My Checkout').start('Another var');
 </script>
 
 <p>
