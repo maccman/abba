@@ -27,13 +27,12 @@ setCookie = (name, value, options = {}) ->
     expires.setTime(expires.getTime() + options.expires*24*60*60*1000)
     options.expires = expires
 
-  options.path ?= '/'
-
   value  = (value + '').replace(/[^!#-+\--:<-\[\]-~]/g, encodeURIComponent)
   cookie = encodeURIComponent(name) + '=' + value
 
   cookie += ';expires=' + options.expires.toGMTString() if options.expires
   cookie += ';path=' + options.path if options.path
+  cookie += ';domain=' + options.domain if options.domain
   document.cookie = cookie
 
 getCookie = (name) ->
@@ -45,10 +44,17 @@ getCookie = (name) ->
     return value if key is name
   null
 
+extend = (target, args...) ->
+  for source in args
+    for key, value of source when value?
+      target[key] = value
+
 # Public
 
 class @Abba
   @endpoint: 'http://localhost:4567'
+  @defaults:
+    path: '/'
 
   constructor: (name, options = {}) ->
     unless name
@@ -177,24 +183,30 @@ class @Abba
       @getVariantForName(name)
 
   getVariantCookie: =>
-    getCookie("abbaVariant_#{@name}")
+    @getCookie("abbaVariant_#{@name}")
 
   setVariantCookie: (value) =>
-    setCookie("abbaVariant_#{@name}", value, expires: 600)
+    @setCookie("abbaVariant_#{@name}", value, expires: 600)
 
   removeVariantCookie: =>
-    setCookie("abbaVariant_#{@name}", '', expires: true)
+    @setCookie("abbaVariant_#{@name}", '', expires: true)
 
   # Complete Cookie
 
   setPersistCompleteCookie: =>
-    setCookie("abbaPersistComplete_#{@name}", '1', expires: 600)
+    @setCookie("abbaPersistComplete_#{@name}", '1', expires: 600)
 
   hasPersistCompleteCookie: =>
-    !!getCookie("abbaPersistComplete_#{@name}")
+    !!@getCookie("abbaPersistComplete_#{@name}")
 
   removePersistCompleteCookie: =>
-    setCookie("abbaPersistComplete_#{@name}", '', expires: true)
+    @setCookie("abbaPersistComplete_#{@name}", '', expires: true)
+
+  setCookie: (name, value, options = {}) ->
+    setCookie(name, value, extend({}, @defaults, options))
+
+  getCookie: (name, options = {}) ->
+    getCookie(name, extend({}, @defaults, options))
 
 do ->
   # Find Abba's endpoint from the script tag
