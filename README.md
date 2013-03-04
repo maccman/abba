@@ -136,28 +136,32 @@ You need to ensure that tracking request doesn't get lost (which can happen in s
 navigating). If the link is navigating to an external page which you don't control, then you have no choice but to cancel the link's default
 event, wait a few milliseconds, then navigate manually:
 
-    $('a.external').click(function(e){
-      // Prevent navigation
-      e.preventDefault();
-      var href = $(this).attr('href');
+    <script>
+      $('body').on('click', 'a.external', function(e){
+        // Prevent navigation
+        e.preventDefault();
+        var href = $(this).attr('href');
 
-      Abba('My Links').complete();
+        Abba('My Links').complete();
 
-      setTimeout(function(){
-        window.location = href;
-      }, 400);
-    });
+        setTimeout(function(){
+          window.location = href;
+        }, 400);
+      });
+    </script>
 
 That's far from ideal though, and it's much better to place the tracking code on the page you're going to navigate to. If you have control
 over the page, then add the following code that checks the URL's hash.
 
-    if (window.location.hash.indexOf('_abbaTestComplete') != -1) {
-      Abba('My Links').complete();
-    }
+    <script>
+      if (window.location.hash.indexOf('_abbaTestComplete') != -1) {
+        Abba('My Links').complete();
+      }
+    </script>
 
 Then add the hash to the link's URL:
 
-    `<a href="/blog#_abbaTestComplete">`
+    <a href="/blog#_abbaTestComplete">
 
 ## Credits
 
