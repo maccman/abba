@@ -85,12 +85,12 @@ class @Abba
     @variants.push(options)
     this
 
-  control: (name, options, callback) =>
+  control: (name = 'Control', options, callback) =>
     if typeof options isnt 'object'
       callback = options
       options  = {}
 
-    options.control  = true
+    options.control = true
     @variant(name, options, callback)
 
   continue: =>

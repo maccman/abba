@@ -24,7 +24,7 @@ class Chart extends Controller
         .scale(x)
         .tickSize(1)
         .tickPadding(12)
-        .ticks(d3.time.days.utc, 1)
+        .ticks(d3.time.days.utc, 2)
         .orient('bottom')
         .tickFormat((d, i) -> moment(d).format('MMM Do'))
 

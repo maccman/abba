@@ -122,10 +122,11 @@ end
 
 get '/admin/experiments/:id' do
   @experiment = Abba::Experiment.find(params[:id])
+  redirect('/admin/experiments') and return unless @experiment
 
   @start_at   = Date.to_mongo(params[:start_at]) if params[:start_at].present?
   @end_at     = Date.to_mongo(params[:end_at]) if params[:end_at].present?
-  @start_at ||= @experiment.created_at
+  @start_at ||= [@experiment.created_at, 30.days.ago].max
   @end_at   ||= Time.now.utc
 
   @start_at   = @start_at.beginning_of_day

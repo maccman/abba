@@ -15,9 +15,17 @@
       <article class="container">
         <h3>Actions</h3>
 
-        <a href="/admin/experiments/<%= @experiment.id %>/toggle" data-method="put" data-confirm="Are you sure?">
-          <%= @experiment.running? ? 'End experiment' : 'Start experiment' %>
-        </a>
+        <p>
+          <a href="/admin/experiments/<%= @experiment.id %>/toggle" data-method="put" data-confirm="Are you sure?">
+            <%= @experiment.running? ? 'End experiment' : 'Start experiment' %>
+          </a>
+        </p>
+
+        <p>
+          <a href="/admin/experiments/<%= @experiment.id %>" data-method="delete" data-confirm="Are you sure you want to delete this experiment?">
+            Delete experiment
+          </a>
+        </p>
       </article>
 
       <article class="container">

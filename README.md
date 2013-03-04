@@ -66,7 +66,7 @@ Once the user has successfully completed the experiment, say paid and navigated 
 
     <script>
       Abba('Checkout')
-        .control('Control')
+        .control()
         .variant('Text: Complete Purchase', function(){
           $('form button').text('Complete Purchase');
         })
@@ -80,12 +80,16 @@ You can find a more complete example under `./public/test`.
 
 ## Options
 
+### Persisting results
+
 If set the `persist` option to `true`, then the experiment won't be reset once it has completed. In other words, that visitor will always see that particular variant, and no more results will be recorded for that visitor.
 
     <script>
       Abba('Pricing', {persist: true}).complete();
     </script>
-    
+
+### Weighting
+
 You can set a variant weight, so some variants are used more than others:
 
     Abba('My Checkout')
@@ -97,8 +101,10 @@ You can set a variant weight, so some variants are used more than others:
         $('#test').text('Variant 2 was chosen!');
       })
       .start();
-      
+
 In the case above, the Control will be invoked 20 times more often than the other variants.
+
+### Flow control
 
 You can continue a previously started test using `continue()`.
 
@@ -117,6 +123,41 @@ Nothing will be recorded if you call `continue()` instead of `start()`. If a var
 You can reset tests using `reset()`.
 
     Abba('My Checkout').reset();
+
+Lastly, you can calculate the test that you want to run server side, and just tell the JavaScript library which flow was chosen.
+
+    Abba('My Checkout').start('Variant A')
+
+### Links
+
+If you're triggering the completion of a test on a link click or a form submit, then things get a bit more complicated.
+
+You need to ensure that tracking request doesn't get lost (which can happen in some browsers if you request an image at the same time as
+navigating). If the link is navigating to an external page which you don't control, then you have no choice but to cancel the link's default
+event, wait a few milliseconds, then navigate manually:
+
+    $('a.external').click(function(e){
+      // Prevent navigation
+      e.preventDefault();
+      var href = $(this).attr('href');
+
+      Abba('My Links').complete();
+
+      setTimeout(function(){
+        window.location = href;
+      }, 400);
+    });
+
+That's far from ideal though, and it's much better to place the tracking code on the page you're going to navigate to. If you have control
+over the page, then add the following code that checks the URL's hash.
+
+    if (window.location.hash.indexOf('_abbaTestComplete') != -1) {
+      Abba('My Links').complete();
+    }
+
+Then add the hash to the link's URL:
+
+    `<a href="/blog#_abbaTestComplete">`
 
 ## Credits
 

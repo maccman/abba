@@ -50,7 +50,7 @@ get '/start', :provides => 'image/gif' do
 
   variant = experiment.variants.find_by_name(params[:variant])
   variant ||= experiment.variants.create!(:name => params[:variant], :control => params[:control])
-  
+
   variant.start!(request) if experiment.running?
 
   prevent_caching
