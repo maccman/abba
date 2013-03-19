@@ -15,7 +15,8 @@ Requirements:
 * Ruby 1.9.3
 * Mongo
 
-The default username and password are `guard` / `llama`. Change these in `config.yml`, unless you want everybody to access your test results. SSL is required in an production environment by default.
+The default username and password are `guard` / `llama`. Change these in `config.yml` or set the environment variables `ABBA_USERNAME` and `ABBA_PASSWORD`, unless you want everybody to access your test results.
+The environment variables have precedence over the config file. SSL is required in an production environment by default.
 
 To run locally:
 
