@@ -30,6 +30,8 @@ configure do
   set :sprockets, env
   set :views, 'app/views'
   set :erb, :escape_html => true
+  set :username, ENV["ABBA_USERNAME"] unless ENV["ABBA_USERNAME"].nil?
+  set :password, ENV["ABBA_PASSWORD"] unless ENV["ABBA_PASSWORD"].nil?
 end
 
 helpers do
