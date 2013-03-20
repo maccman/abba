@@ -48,6 +48,7 @@ extend = (target, args...) ->
   for source in args
     for key, value of source when value?
       target[key] = value
+  return target
 
 # Public
 
