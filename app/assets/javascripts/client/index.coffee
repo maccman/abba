@@ -56,6 +56,7 @@ class @Abba
   @endpoint: 'http://localhost:4567'
   @defaults:
     path: '/'
+    expires: 600
 
   constructor: (name, options = {}) ->
     unless name
@@ -187,7 +188,7 @@ class @Abba
     @getCookie("abbaVariant_#{@name}")
 
   setVariantCookie: (value) =>
-    @setCookie("abbaVariant_#{@name}", value, expires: 600)
+    @setCookie("abbaVariant_#{@name}", value, expires: @options.expires)
 
   removeVariantCookie: =>
     @setCookie("abbaVariant_#{@name}", '', expires: true)
@@ -195,7 +196,7 @@ class @Abba
   # Complete Cookie
 
   setPersistCompleteCookie: =>
-    @setCookie("abbaPersistComplete_#{@name}", '1', expires: 600)
+    @setCookie("abbaPersistComplete_#{@name}", '1', expires: @options.expires)
 
   hasPersistCompleteCookie: =>
     !!@getCookie("abbaPersistComplete_#{@name}")
