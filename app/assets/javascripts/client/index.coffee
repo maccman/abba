@@ -53,8 +53,8 @@ extend = (target, args...) ->
 # Public
 
 class @Abba
-  @endpoint: 'http://localhost:4567'
-  @defaults:
+  endpoint: 'http://localhost:4567'
+  defaults:
     path: '/'
     expires: 600
 
