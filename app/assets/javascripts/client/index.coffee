@@ -130,7 +130,7 @@ class @Abba
     @useVariant(variant)
     this
 
-  complete: (name) =>
+  complete: (name, callback) =>
     # Optionally pass a name, or read from the cookie
     name or= @getVariantCookie()
     return this unless name
@@ -144,7 +144,7 @@ class @Abba
     else
       @reset()
 
-    @recordComplete(name)
+    @recordComplete(name, callback)
     this
 
   reset: =>
@@ -174,9 +174,9 @@ class @Abba
     # Set the variant we chose as a cookie
     @setVariantCookie(variant.name)
 
-  recordComplete: (name) =>
+  recordComplete: (name, callback) =>
     # Record the experiment was completed on the server
-    request("#{@endpoint}/complete", experiment: @name, variant: name)
+    request("#{@endpoint}/complete", experiment: @name, variant: name, callback)
 
   # Variant Cookie
 
