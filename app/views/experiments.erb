@@ -14,6 +14,7 @@
     <table class="table">
       <thead>
         <tr>
+          <th class="state"></th>
           <th class="index">#</th>
           <th class="name">Name</th>
           <th class="visitors">Visitors</th>
@@ -23,6 +24,7 @@
 
       <% @experiments.each_with_index do |experiment, i| %>
         <tr>
+          <td class="state <%= experiment.running ? "active" : "inactive" %>"> </td>
           <td class="index"><%= i + 1 %></td>
 
           <td class="name">
