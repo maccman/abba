@@ -20,15 +20,22 @@ section.experiments {
 
   table tr {
 
-    .state {
-      width: 20px;
-      &.active {
-        background-color: #82c82d;
+    td.state {
+      width: 10px;
+      vertical-align: middle;
+      & div {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        &.active {
+          background-color: #82c82d;
+        }
+        &.inactive {
+          background-color: #b90000;
+        }
       }
 
-      &.inactive {
-        background-color: #b90000;
-      }
+
     }
 
 
