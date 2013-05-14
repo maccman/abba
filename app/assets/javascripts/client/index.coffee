@@ -87,7 +87,7 @@ class @Abba
     @variants.push(options)
     this
 
-  control: (name = 'Control', options, callback) =>
+  control: (name = 'Control', options, callback) ->
     if typeof options isnt 'object'
       callback = options
       options  = {}
@@ -95,13 +95,13 @@ class @Abba
     options.control = true
     @variant(name, options, callback)
 
-  continue: =>
+  continue: ->
     # Use the same variant as before, don't record anything
     if variant = @getPreviousVariant()
       @useVariant(variant)
     this
 
-  start: (name, options = {}) =>
+  start: (name, options = {}) ->
     if variant = @getPreviousVariant()
       # Use the same variant as before, don't record anything
       @useVariant(variant)
@@ -130,7 +130,7 @@ class @Abba
     @useVariant(variant)
     this
 
-  complete: (name) =>
+  complete: (name) ->
     # Optionally pass a name, or read from the cookie
     name or= @getVariantCookie()
     return this unless name
@@ -147,7 +147,7 @@ class @Abba
     @recordComplete(name)
     this
 
-  reset: =>
+  reset: ->
     @removeVariantCookie()
     @removePersistCompleteCookie()
     @result = null
@@ -155,14 +155,14 @@ class @Abba
 
   # Private
 
-  getVariantForName: (name) =>
+  getVariantForName: (name) ->
     (v for v in @variants when v.name is name)[0]
 
-  useVariant: (variant) =>
+  useVariant: (variant) ->
     variant?.callback?()
     @chosen = variant
 
-  recordStart: (variant) =>
+  recordStart: (variant) ->
     # Record which experiment was run on the server
     request(
       "#{@endpoint}/start",
@@ -174,34 +174,34 @@ class @Abba
     # Set the variant we chose as a cookie
     @setVariantCookie(variant.name)
 
-  recordComplete: (name) =>
+  recordComplete: (name) ->
     # Record the experiment was completed on the server
     request("#{@endpoint}/complete", experiment: @name, variant: name)
 
   # Variant Cookie
 
-  getPreviousVariant: =>
+  getPreviousVariant: ->
     if name = @getVariantCookie()
       @getVariantForName(name)
 
-  getVariantCookie: =>
+  getVariantCookie: ->
     @getCookie("abbaVariant_#{@name}")
 
-  setVariantCookie: (value) =>
+  setVariantCookie: (value) ->
     @setCookie("abbaVariant_#{@name}", value, expires: @options.expires)
 
-  removeVariantCookie: =>
+  removeVariantCookie: ->
     @setCookie("abbaVariant_#{@name}", '', expires: true)
 
   # Complete Cookie
 
-  setPersistCompleteCookie: =>
+  setPersistCompleteCookie: ->
     @setCookie("abbaPersistComplete_#{@name}", '1', expires: @options.expires)
 
-  hasPersistCompleteCookie: =>
+  hasPersistCompleteCookie: ->
     !!@getCookie("abbaPersistComplete_#{@name}")
 
-  removePersistCompleteCookie: =>
+  removePersistCompleteCookie: ->
     @setCookie("abbaPersistComplete_#{@name}", '', expires: true)
 
   setCookie: (name, value, options = {}) ->
