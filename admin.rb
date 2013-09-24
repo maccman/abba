@@ -15,8 +15,8 @@ configure do
   ActiveSupport.escape_html_entities_in_json = true
 
   MongoMapper.setup({
-    'production'  => {'uri' => ENV['MONGOHQ_URL']},
-    'development' => {'uri' => 'mongodb://localhost:27017/abba-development'}
+    'production'  => {'uri' => ENV['MONGOHQ_URL'] || ENV['MONGOLAB_URI']},
+    'development' => {'uri' => 'mongodb://localhost:27017/abba'}
   }, settings.environment.to_s)
 
   env = Sprockets::Environment.new(settings.root)
