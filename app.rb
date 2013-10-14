@@ -15,6 +15,7 @@ configure do
 
   MongoMapper.setup({
     'production'  => {'uri' => ENV['MONGOHQ_URL'] || ENV['MONGOLAB_URI']},
+    'staging'  => {'uri' => ENV['MONGOHQ_URL'] || ENV['MONGOLAB_URI']},
     'development' => {'uri' => 'mongodb://localhost:27017/abba'}
   }, settings.environment.to_s)
 
