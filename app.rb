@@ -8,6 +8,8 @@ require 'sinatra'
 require 'active_support/json'
 require 'app/abba'
 
+require 'newrelic_rpm'
+
 configure do
   ActiveSupport.escape_html_entities_in_json = true
 

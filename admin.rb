@@ -9,6 +9,8 @@ require 'sinatra/config_file'
 require 'active_support/json'
 require 'app/abba'
 
+require 'newrelic_rpm'
+
 config_file 'config.yml'
 
 configure do
