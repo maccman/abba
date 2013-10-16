@@ -1,11 +1,11 @@
 <meta http-equiv="refresh" content="1800">
 
-<% title @experiment.name %>
+<% title "#{@experiment.application} - #{@experiment.name}" %>
 
 <section class="header">
   <header>
     <h1><%= @experiment.name %></h1>
-    <h2>Experiment results</h2>
+    <h2><%= @experiment.application %></h1>
   </header>
 </section>
 

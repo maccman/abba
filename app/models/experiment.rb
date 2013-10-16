@@ -2,12 +2,14 @@ module Abba
   class Experiment
     include MongoMapper::Document
 
+    key :application
     key :name
     key :running, Boolean, :default => true
     timestamps!
 
     has_many :variants, :class => Abba::Variant, :dependent => :destroy
 
+    validates_presence_of :application
     validates_presence_of :name
 
     def granular_conversion_rate(options = {})
@@ -32,7 +34,7 @@ module Abba
     end
 
     def as_json(options = nil)
-      {id: id, name: name}
+      {id: id, application: application, name: name}
     end
   end
 end
