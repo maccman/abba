@@ -47,9 +47,9 @@ get '/v1/abba.js', :provides => 'application/javascript' do
 end
 
 get '/start', :provides => 'image/gif' do
-  required :experiment, :variant
+  required :application, :experiment, :variant
 
-  experiment = Abba::Experiment.find_or_create_by_name(params[:experiment])
+  experiment = Abba::Experiment.find_or_create_by_application_and_name(params[:application], params[:experiment])
 
   variant = experiment.variants.find_by_name(params[:variant])
   variant ||= experiment.variants.create!(:name => params[:variant], :control => params[:control])
@@ -61,9 +61,9 @@ get '/start', :provides => 'image/gif' do
 end
 
 get '/complete', :provides => 'image/gif' do
-  required :experiment, :variant
+  required :application, :experiment, :variant
 
-  experiment = Abba::Experiment.find_or_create_by_name(params[:experiment])
+  experiment = Abba::Experiment.find_or_create_by_application_and_name(params[:application], params[:experiment])
 
   variant = experiment.variants.find_by_name(params[:variant])
   variant.complete!(request) if variant && experiment.running?

@@ -58,17 +58,20 @@ class @Abba
     path: '/'
     expires: 600
 
-  constructor: (name, options = {}) ->
+  constructor: (application, name, options = {}) ->
+    unless application
+      throw new Error('Application name required')
     unless name
       throw new Error('Experiment name required')
 
     # Force constructor
     if this not instanceof Abba
-      return new Abba(name, options)
+      return new Abba(application, name, options)
 
-    @name     = name
-    @options  = options
-    @variants = []
+    @application = application
+    @name        = name
+    @options     = options
+    @variants    = []
 
     @endpoint = @options.endpoint or @constructor.endpoint
 
@@ -166,9 +169,10 @@ class @Abba
     # Record which experiment was run on the server
     request(
       "#{@endpoint}/start",
-      experiment: @name,
-      variant:    variant.name,
-      control:    variant.control or false
+      application: @application,
+      experiment:  @name,
+      variant:     variant.name,
+      control:     variant.control or false
     )
 
     # Set the variant we chose as a cookie
@@ -176,7 +180,12 @@ class @Abba
 
   recordComplete: (name) ->
     # Record the experiment was completed on the server
-    request("#{@endpoint}/complete", experiment: @name, variant: name)
+    request(
+      "#{@endpoint}/complete",
+      application: @application,
+      experiment:  @name,
+      variant:     name
+    )
 
   # Variant Cookie
 
