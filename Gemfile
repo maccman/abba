@@ -1,9 +1,10 @@
 ruby '1.9.3'
 source "https://rubygems.org"
+ruby '2.0.0'
 
 gem 'sinatra'
 gem 'sinatra-contrib'
-gem 'thin'
+gem 'unicorn'
 gem 'mongo_mapper'
 gem 'bson_ext'
 gem 'eco'
