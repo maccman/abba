@@ -11,8 +11,7 @@ module Abba
       ie7:     {browser: 'Internet Explorer', browser_version: '7.0'},
       ie8:     {browser: 'Internet Explorer', browser_version: '8.0'},
       ie9:     {browser: 'Internet Explorer', browser_version: '9.0'},
-      ie10:    {browser: 'Internet Explorer', browser_version: '10.0'},
-      mobile:  {mobile: true}
+      ie10:    {browser: 'Internet Explorer', browser_version: '10.0'}
     }
 
     key :url
