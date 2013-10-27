@@ -36,7 +36,7 @@ GEM
       activesupport (~> 3.0)
       plucky (~> 0.5.2)
     multi_json (1.5.0)
-    newrelic_rpm (3.6.8.164)
+    newrelic_rpm (3.6.8.168)
     plucky (0.5.2)
       mongo (~> 1.5)
     rack (1.4.3)
