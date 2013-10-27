@@ -11,22 +11,35 @@ module Abba
         @variants   = experiment.variants
       end
 
-      def to_a
-        result = @variants.map do |variant|
-          VariantPresentor.new(variant, control, options)
-        end
+      def started_count
+        presentors.map(&:started_count).reduce(:+)
+      end
 
-        result.sort_by(&:conversion_rate).reverse
+      def completed_count
+        presentors.map(&:completed_count).reduce(:+)
       end
 
       def each(&block)
         to_a.each(&block)
       end
+
+      def to_a
+        presentors.sort_by(&:conversion_rate).reverse
+      end
+
+      private
+
+      def presentors
+        @presentors ||= @variants.map do |variant|
+          VariantPresentor.new(self, variant, control, options)
+        end
+      end
     end
 
-    attr_reader :variant, :control, :options
+    attr_reader :group, :variant, :control, :options
 
-    def initialize(variant, control = nil, options = {})
+    def initialize(group, variant, control = nil, options = {})
+      @group   = group
       @variant = variant
       @control = control
       @options = options
@@ -38,6 +51,15 @@ module Abba
 
     def completed_count
       @completed_count ||= completed_requests.count
+    end
+
+    def share
+      return 0 if started_count.zero?
+      started_count.to_f / @group.started_count
+    end
+
+    def percent_share
+      (share * 100).round(1)
     end
 
     def conversion_rate
