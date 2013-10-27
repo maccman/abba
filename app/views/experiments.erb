@@ -10,7 +10,11 @@
 <section class="experiments">
   <% @experiments_by_application.each do |application, experiments| %>
     <article class="container list">
-      <h3><%= application %></h3>
+      <h3>
+        <a href="/admin/experiments?application=<%= application %>">
+          <%= application %>
+        </a>
+      </h3>
 
       <table class="table">
         <thead>

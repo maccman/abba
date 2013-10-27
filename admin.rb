@@ -101,8 +101,10 @@ get '/assets/*' do
 end
 
 get '/admin/experiments' do
-  experiments = Abba::Experiment.all.sort_by { |e| [e.application, e.created_at] }
-  @experiments_by_application = experiments.group_by(&:application)
+  experiments = Abba::Experiment.query
+  experiments = experiments.where(application: params[:application]) if params[:application].present?
+  experiments = experiments.where(name: /#{params[:filter]}/i) if params[:filter].present?
+  @experiments_by_application = experiments.sort_by { |e| [e.application, e.created_at] }.group_by(&:application)
   erb :experiments
 end
 
