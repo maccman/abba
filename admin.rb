@@ -101,7 +101,8 @@ get '/assets/*' do
 end
 
 get '/admin/experiments' do
-  @experiments = Abba::Experiment.all
+  experiments = Abba::Experiment.all.sort_by { |e| [e.application, e.created_at] }
+  @experiments_by_application = experiments.group_by(&:application)
   erb :experiments
 end
 
