@@ -7,7 +7,7 @@ module Abba
         @experiment = experiment
         @options    = options
         @control    = experiment.control
-        @control    = VariantPresentor.new(control, nil, options) if control
+        @control    = VariantPresentor.new(self, control, nil, options) if control
         @variants   = experiment.variants
       end
 
@@ -54,7 +54,7 @@ module Abba
     end
 
     def share
-      return 0 if started_count.zero?
+      return 0 if started_count.zero? or not @group
       started_count.to_f / @group.started_count
     end
 
