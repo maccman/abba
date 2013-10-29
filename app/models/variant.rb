@@ -29,7 +29,7 @@ module Abba
     end
 
     def conversion_rate_for(options = {})
-      VariantPresentor.new(self, nil, options).conversion_rate
+      VariantPresentor.new(nil, self, nil, options).conversion_rate
     end
 
     def granular_conversion_rate(options = {})

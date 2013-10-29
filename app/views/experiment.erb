@@ -4,8 +4,9 @@
 
 <section class="header">
   <header>
-    <h1><%= @experiment.name %></h1>
-    <h2><%= @experiment.application %></h1>
+    <h1><%= @experiment.application %></h1>
+    <h2><%= @experiment.name %></h2>
+    <h3><%= @experiment.description %></h3>
   </header>
 </section>
 
@@ -75,6 +76,7 @@
           <tr>
             <th>Name</th>
             <th>Conversions / Visitors</th>
+            <th>Share</th>
             <th>Conversion rate</th>
             <th>Probability</th>
             <th>Improvement</th>
@@ -85,6 +87,7 @@
           <tr data-id="<%= variant.id %>">
             <td class="name"><%= variant.name %></td>
             <td class="overall"><%= variant.completed_count %> / <%= variant.started_count %></td>
+            <td class="share"><%=variant.percent_share %></td>
             <td class="conversion <%= dir(variant.percent_conversion_rate) %>"><%= variant.percent_conversion_rate %></td>
             <td class="probability <%= dir(variant.probability) %>"><%= variant.probability %></td>
             <td class="difference <%= dir(variant.percent_difference) %>"><%= variant.percent_difference %></td>

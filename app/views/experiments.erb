@@ -8,66 +8,63 @@
 </section>
 
 <section class="experiments">
-  <article class="container list">
-    <h3>Experiments</h3>
+  <% @experiments_by_application.each do |application, experiments| %>
+    <article class="container list">
+      <h3>
+        <a href="/admin/experiments?application=<%= application %>">
+          <%= application %>
+        </a>
+      </h3>
 
-    <table class="table">
-      <thead>
-        <tr>
-          <th class="state"></th>
-          <th class="index">#</th>
-          <th class="application">Application</th>
-          <th class="name">Name</th>
-          <th class="visitors">Visitors</th>
-          <th class="actions"></th>
-        </tr>
-      </thead>
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="state"></th>
+            <th class="index">#</th>
+            <th class="name">Name</th>
+            <th class="description">Description</th>
+            <th class="visitors">Visitors</th>
+            <th class="started">Started</th>
+            <th class="updated">Updated</th>
+            <th class="actions"></th>
+          </tr>
+        </thead>
 
-      <% @experiments.each_with_index do |experiment, i| %>
-        <tr>
-          <td class="state"><div class="<%= experiment.running ? "active" : "inactive" %>" title="<%= experiment.running ? "Running" : "Stopped" %>"></div></td>
-          <td class="index"><%= i + 1 %></td>
+        <% experiments.each_with_index do |experiment, i| %>
+          <tr>
+            <td class="state"><div class="<%= experiment.running ? "active" : "inactive" %>" title="<%= experiment.running ? "Running" : "Stopped" %>"></div></td>
+            <td class="index"><%= i + 1 %></td>
 
-          <td class="application">
-            <%= experiment.application %>
-          </td>
+            <td class="name">
+              <a href="/admin/experiments/<%= experiment.id %>">
+                <%= experiment.name %>
+              </a>
+            </td>
 
-          <td class="name">
-            <a href="/admin/experiments/<%= experiment.id %>">
-              <%= experiment.name %>
-            </a>
-          </td>
+            <td class="description">
+              <%= experiment.description %>
+            </td>
 
-          <td class="visitors">
-            <%= experiment.started_count %>
-          </td>
+            <td class="visitors">
+              <%= experiment.started_count %>
+            </td>
 
-          <td class="actions">
-            <a href="/admin/experiments/<%= experiment.id %>" data-method="delete" data-confirm="Are you sure?">
-              Delete
-            </a>
-          </td>
-        </tr>
-      <% end %>
-    </table>
-  </article>
+            <td class="started">
+              <%= experiment.created_at %>
+            </td>
 
-  <article class="container new">
-    <h3>New Experiment</h3>
-    <pre><%= %{
-<script src="//#{request.host_with_port}/v1/abba.js"></script>
+            <td class="updated">
+              <%= experiment.updated_at %>
+            </td>
 
-<script>
-  Abba('My Application', 'Test name')
-    .control('test a', function(){ /* ... */ })
-    .variant('test b', function(){ /* ... */ })
-    .start();
-</script>
-
-<script>
-  // On successful conversion
-  Abba('My Application', 'Test name').complete();
-</script>
-}.strip %></pre>
-  </article>
+            <td class="actions">
+              <a href="/admin/experiments/<%= experiment.id %>" data-method="delete" data-confirm="Are you sure?">
+                Delete
+              </a>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </article>
+  <% end %>
 </section>

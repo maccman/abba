@@ -1,16 +1,10 @@
 @import './mixins'
 
 section.experiments {
-  hbox()
+  vbox()
 
   .list {
     box-flex: 1
-    margin-right: 0px
-  }
-
-  .new {
-    width: 420px
-    height: 100%
   }
 
   pre {
@@ -34,13 +28,19 @@ section.experiments {
           background-color: #b90000;
         }
       }
-
-
     }
 
 
     .index {
       width: 20px
+    }
+
+    .name {
+      width: 150px
+    }
+
+    .description {
+      width: 400px
     }
 
     .actions {

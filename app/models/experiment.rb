@@ -4,6 +4,7 @@ module Abba
 
     key :application
     key :name
+    key :description
     key :running, Boolean, :default => true
     timestamps!
 
