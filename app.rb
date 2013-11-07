@@ -5,19 +5,27 @@ Bundler.require
 $: << settings.root
 
 require 'sinatra'
+require 'sinatra/config_file'
 require 'active_support/json'
 require 'app/abba'
 
 require 'newrelic_rpm'
 
+config_file 'config.yml'
+
 configure do
   ActiveSupport.escape_html_entities_in_json = true
 
-  MongoMapper.setup({
-    'production'  => {'uri' => ENV['MONGOHQ_URL'] || ENV['MONGOLAB_URI']},
-    'staging'  => {'uri' => ENV['MONGOHQ_URL'] || ENV['MONGOLAB_URI']},
-    'development' => {'uri' => 'mongodb://localhost:27017/abba'}
-  }, settings.environment.to_s)
+  if File.file?(settings.mongo_config_file)
+    config = YAML.load(ERB.new(File.read(settings.mongo_config_file)).result)
+    MongoMapper.setup(config, settings.environment.to_s)
+  else
+    MongoMapper.setup({
+      'production'  => {'uri' => ENV['MONGOHQ_URL'] || ENV['MONGOLAB_URI']},
+      'staging'  => {'uri' => ENV['MONGOHQ_URL'] || ENV['MONGOLAB_URI']},
+      'development' => {'uri' => 'mongodb://localhost:27017/abba'}
+    }, settings.environment.to_s)
+  end
 
   env = Sprockets::Environment.new(settings.root)
   env.append_path('app/assets/javascripts')
