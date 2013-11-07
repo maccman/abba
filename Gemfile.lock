@@ -84,6 +84,7 @@ DEPENDENCIES
   coffee-script
   eco
   erubis
+  eventmachine (= 1.0.3)
   mongo_mapper
   newrelic_rpm
   sinatra
