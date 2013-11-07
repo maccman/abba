@@ -24,7 +24,7 @@ GEM
       execjs
     eco-source (1.1.0.rc.1)
     erubis (2.7.0)
-    eventmachine (1.0.0)
+    eventmachine (1.0.3)
     execjs (1.4.0)
       multi_json (~> 1.0)
     hike (1.2.1)
@@ -84,6 +84,7 @@ DEPENDENCIES
   coffee-script
   eco
   erubis
+  eventmachine (= 1.0.3)
   mongo_mapper
   newrelic_rpm
   sinatra
