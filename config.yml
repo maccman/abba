@@ -1,3 +1,4 @@
 ssl: true
 username: guard
 password: llama
+mongo_config_file: mongo.yml

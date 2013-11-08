@@ -1,0 +1,17 @@
+development:
+  adapter: mongodb
+  database: abba
+  host: localhost
+  port: nil
+
+staging:
+  adapter: mongodb
+  database: abba-staging
+  host: localhost:12345
+
+production:
+  adapter: mongodb
+  database: abba
+  hosts:
+    - node1.rs1.example.com:12345
+    - node2.rs1.example.com:12345

@@ -8,6 +8,7 @@ require 'sinatra'
 require 'sinatra/config_file'
 require 'active_support/json'
 require 'app/abba'
+require 'helpers'
 
 require 'newrelic_rpm'
 
@@ -16,11 +17,9 @@ config_file 'config.yml'
 configure do
   ActiveSupport.escape_html_entities_in_json = true
 
-  MongoMapper.setup({
-    'production'  => {'uri' => ENV['MONGOHQ_URL'] || ENV['MONGOLAB_URI']},
-    'staging'  => {'uri' => ENV['MONGOHQ_URL'] || ENV['MONGOLAB_URI']},
-    'development' => {'uri' => 'mongodb://localhost:27017/abba'}
-  }, settings.environment.to_s)
+  # Configure MongoMapper
+  mongo_config = Helpers::Configuration.mongomapper_config(settings.mongo_config_file)
+  MongoMapper.setup(mongo_config, settings.environment.to_s)
 
   env = Sprockets::Environment.new(settings.root)
 
