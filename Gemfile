@@ -15,3 +15,7 @@ gem 'uglifier'
 gem 'coffee-script'
 gem 'stylus'
 gem 'newrelic_rpm'
+
+group :production do
+	gem 'unicorn'
+end

@@ -33,6 +33,13 @@ To run locally:
 
 The default username and password are `guard` / `llama`.
 
+## Run on dedicated production server
+
+In prodcution you should run Abba with unicorn, because the admin interface is blocking all the threads of thin. An example run in production could be this (see the unicorn.conf.rb.example in the project root):
+
+    bundle install --deployment --without development test
+    bundle exec unicorn --config unicorn.conf.rb
+
 ## A/B testing API
 
 First include abba.js using a script tag. The host of this url will need to point to wherever you deployed the app.
