@@ -34,6 +34,9 @@ configure do
   set :erb, :escape_html => true
   set :username, ENV["ABBA_USERNAME"] unless ENV["ABBA_USERNAME"].nil?
   set :password, ENV["ABBA_PASSWORD"] unless ENV["ABBA_PASSWORD"].nil?
+  if ['true', 'TRUE', '1', 'yes', 'YES', 'on', 'ON', 't', 'T'].include? ENV["ABBA_SSL"]
+    set :ssl, true
+  end
 end
 
 helpers do
