@@ -85,7 +85,7 @@ helpers do
   end
 end
 
-configure :production do
+configure :staging, :production do
   before '/admin/*' do
     ssl_enforce!
   end
