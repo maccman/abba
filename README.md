@@ -21,13 +21,14 @@ The environment variables have precedence over the config file. SSL is required 
 To run locally:
 
     bundle install
-    thin start
+    unicorn
 
 ## Heroku 10 seconds setup
 
     git clone git://github.com/maccman/abba.git && cd abba
     heroku create
     heroku addons:add mongohq:sandbox
+    heroku config:set WEB_CONCURRENCY=3
     git push heroku master
     heroku open
 
