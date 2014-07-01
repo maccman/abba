@@ -26,7 +26,7 @@ namespace :db do
   desc "Create MongoDB indexes"
   task :create_indexes do
     require 'app'
-    Abba::Request.ensure_index([[:started_request_type, 1], [:started_request_id, 1], [:created_at, 1], [:browser, 1], [:browser_version, 1]])
-    Abba::Request.ensure_index([[:completed_request_type, 1], [:completed_request_id, 1], [:created_at, 1], [:browser, 1], [:browser_version, 1]])
+    Abba::Request.ensure_index([[:started_request_type, 1], [:started_request_id, 1], [:created_at, 1], [:browser, 1], [:browser_version, 1]], :background => true)
+    Abba::Request.ensure_index([[:completed_request_type, 1], [:completed_request_id, 1], [:created_at, 1], [:browser, 1], [:browser_version, 1]], :background => true)
   end
 end
