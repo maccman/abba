@@ -64,7 +64,7 @@ helpers do
 
   def protected!
     unless authorized?
-      response['WWW-Authenticate'] = %(Basic realm="Testing HTTP Auth")
+      response['WWW-Authenticate'] = %(Basic realm="Abba")
       throw(:halt, [401, "Not authorized\n"])
     end
   end
