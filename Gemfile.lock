@@ -7,7 +7,7 @@ GEM
     activesupport (3.2.11)
       i18n (~> 0.6)
       multi_json (~> 1.0)
-    backports (2.6.5)
+    backports (3.6.4)
     bson (1.8.0)
       activesupport
     bson_ext (1.8.0)
@@ -25,8 +25,7 @@ GEM
     eco-source (1.1.0.rc.1)
     erubis (2.7.0)
     eventmachine (1.0.3)
-    execjs (1.4.0)
-      multi_json (~> 1.0)
+    execjs (2.2.2)
     hike (1.2.1)
     i18n (0.6.1)
     kgio (2.8.1)
@@ -36,7 +35,7 @@ GEM
       activemodel (~> 3.0)
       activesupport (~> 3.0)
       plucky (~> 0.5.2)
-    multi_json (1.5.0)
+    multi_json (1.10.1)
     newrelic_rpm (3.6.8.168)
     plucky (0.5.2)
       mongo (~> 1.5)
@@ -90,7 +89,7 @@ DEPENDENCIES
   coffee-script
   eco
   erubis
-  eventmachine (= 1.0.3)
+  eventmachine
   mongo_mapper
   newrelic_rpm
   sinatra
