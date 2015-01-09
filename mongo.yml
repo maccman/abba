@@ -1,0 +1,10 @@
+development:
+  adapter: mongodb
+  database: abba
+  host: mongodb
+  port: 27017
+
+production:
+  adapter: mongodb
+  database: abba
+  uri: <%= ENV['MONGODB_URL'] %>
