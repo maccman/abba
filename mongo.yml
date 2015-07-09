@@ -7,4 +7,4 @@ development:
 production:
   adapter: mongodb
   database: abba
-  uri: <%= ENV['MONGO_URL'] %>
+  uri: <%= ENV['MONGO_URL'] || ENV['MONGODB_URL'] %>
