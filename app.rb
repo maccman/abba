@@ -1,16 +1,4 @@
-require 'rubygems'
-require 'bundler'
-
-Bundler.require
-$: << settings.root
-
-require 'sinatra'
-require 'sinatra/config_file'
-require 'active_support/json'
 require 'app/abba'
-require 'helpers'
-
-require 'newrelic_rpm'
 
 helpers do
   def prevent_caching

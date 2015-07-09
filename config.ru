@@ -1,5 +1,14 @@
-require './app'
-require './admin'
+require 'rubygems'
+require 'bundler'
+Bundler.require(:default)
+
+$LOAD_PATH << settings.root
+
+require 'active_support/json'
+
+require 'app/abba'
+require 'app'
+require 'admin'
 
 configure do
   ActiveSupport.escape_html_entities_in_json = true
