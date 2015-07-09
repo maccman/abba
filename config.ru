@@ -1,12 +1,11 @@
 require './app'
 require './admin'
 
-config_file 'config.yml'
 configure do
   ActiveSupport.escape_html_entities_in_json = true
 
   # Configure MongoMapper
-  mongo_config = Helpers::Configuration.mongomapper_config(settings.mongo_config_file)
+  mongo_config = YAML.load(ERB.new(File.read('mongo.yml')).result)
   MongoMapper.setup(mongo_config, settings.environment.to_s)
 
   env = Sprockets::Environment.new(settings.root)
