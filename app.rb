@@ -1,26 +1,3 @@
-require 'rubygems'
-require 'bundler'
-
-Bundler.require
-$: << settings.root
-
-require 'sinatra'
-require 'active_support/json'
-require 'app/abba'
-
-configure do
-  ActiveSupport.escape_html_entities_in_json = true
-
-  MongoMapper.setup({
-    'production'  => {'uri' => ENV['MONGOHQ_URL']},
-    'development' => {'uri' => 'mongodb://localhost:27017/abba-development'}
-  }, settings.environment.to_s)
-
-  env = Sprockets::Environment.new(settings.root)
-  env.append_path('app/assets/javascripts')
-  set :sprockets, env
-end
-
 helpers do
   def prevent_caching
     headers['Cache-Control'] = 'no-cache, no-store'
@@ -44,9 +21,9 @@ get '/v1/abba.js', :provides => 'application/javascript' do
 end
 
 get '/start', :provides => 'image/gif' do
-  required :experiment, :variant
+  required :application, :experiment, :variant
 
-  experiment = Abba::Experiment.find_or_create_by_name(params[:experiment])
+  experiment = Abba::Experiment.find_or_create_by_application_and_name(params[:application], params[:experiment])
 
   variant = experiment.variants.find_by_name(params[:variant])
   variant ||= experiment.variants.create!(:name => params[:variant], :control => params[:control])
@@ -58,9 +35,9 @@ get '/start', :provides => 'image/gif' do
 end
 
 get '/complete', :provides => 'image/gif' do
-  required :experiment, :variant
+  required :application, :experiment, :variant
 
-  experiment = Abba::Experiment.find_or_create_by_name(params[:experiment])
+  experiment = Abba::Experiment.find_or_create_by_application_and_name(params[:application], params[:experiment])
 
   variant = experiment.variants.find_by_name(params[:variant])
   variant.complete!(request) if variant && experiment.running?

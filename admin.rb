@@ -1,39 +1,3 @@
-require 'rubygems'
-require 'bundler'
-
-Bundler.require
-$: << settings.root
-
-require 'sinatra'
-require 'sinatra/config_file'
-require 'active_support/json'
-require 'app/abba'
-
-config_file 'config.yml'
-
-configure do
-  ActiveSupport.escape_html_entities_in_json = true
-
-  MongoMapper.setup({
-    'production'  => {'uri' => ENV['MONGOHQ_URL']},
-    'development' => {'uri' => 'mongodb://localhost:27017/abba-development'}
-  }, settings.environment.to_s)
-
-  env = Sprockets::Environment.new(settings.root)
-
-  env.append_path('app/assets/javascripts')
-  env.append_path('app/assets/stylesheets')
-  env.append_path('vendor/assets/javascripts')
-
-  Stylus.setup(env)
-
-  set :sprockets, env
-  set :views, 'app/views'
-  set :erb, :escape_html => true
-  set :username, ENV["ABBA_USERNAME"] unless ENV["ABBA_USERNAME"].nil?
-  set :password, ENV["ABBA_PASSWORD"] unless ENV["ABBA_PASSWORD"].nil?
-end
-
 helpers do
   def title(value = nil)
     @title = value if value
@@ -59,7 +23,7 @@ helpers do
 
   def protected!
     unless authorized?
-      response['WWW-Authenticate'] = %(Basic realm="Testing HTTP Auth")
+      response['WWW-Authenticate'] = %(Basic realm="Abba")
       throw(:halt, [401, "Not authorized\n"])
     end
   end
@@ -98,7 +62,10 @@ get '/assets/*' do
 end
 
 get '/admin/experiments' do
-  @experiments = Abba::Experiment.all
+  experiments = Abba::Experiment.query
+  experiments = experiments.where(application: params[:application]) if params[:application].present?
+  experiments = experiments.where(name: /#{params[:filter]}/i) if params[:filter].present?
+  @experiments_by_application = experiments.sort_by { |e| [e.application, e.created_at] }.group_by(&:application)
   erb :experiments
 end
 
