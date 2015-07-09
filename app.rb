@@ -1,5 +1,3 @@
-require 'app/abba'
-
 helpers do
   def prevent_caching
     headers['Cache-Control'] = 'no-cache, no-store'

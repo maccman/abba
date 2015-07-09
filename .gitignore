@@ -1,3 +1,4 @@
 .DS_Store
 log/
 public/v1
+.ruby-version
