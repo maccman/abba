@@ -7,13 +7,14 @@ $: << settings.root
 require 'sinatra'
 require 'active_support/json'
 require 'app/abba'
+logger = Logger.new(STDOUT)
 
 configure do
   ActiveSupport.escape_html_entities_in_json = true
 
   MongoMapper.setup({
-    'production'  => {'uri' => ENV['MONGOHQ_URL'] || ENV['MONGOLAB_URI']},
-    'development' => {'uri' => 'mongodb://localhost:27017/abba-development'}
+    'production'  => {'uri' => ENV['MONGOHQ_URL'] || ENV['MONGOLAB_URI'], logger: logger},
+    'development' => {'uri' => 'mongodb://localhost:27017/abba-development', logger: logger}
   }, settings.environment.to_s)
 
   env = Sprockets::Environment.new(settings.root)
